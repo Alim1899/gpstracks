@@ -1,0 +1,33 @@
+.field { display: flex; flex-direction: column; gap: var(--space-1); }
+
+.label { font-size: 14px; font-weight: 500; }
+
+.control {
+  display: flex;
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.control:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-focus);
+}
+.hasError { border-color: var(--color-error); }
+.hasError:focus-within { box-shadow: 0 0 0 3px var(--color-error-soft); }
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 16px; /* 16px-ზე ნაკლებზე iOS ზუმავს */
+  outline: none;
+}
+
+.error { margin: 0; font-size: 13px; color: var(--color-error); }
+.hint  { margin: 0; font-size: 13px; color: var(--color-muted); }

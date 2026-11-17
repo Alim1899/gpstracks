@@ -1,4 +1,9 @@
-import { signInWithPopup, signOut } from "firebase/auth";
+import {
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut,
+} from "firebase/auth";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db, googleProvider } from "../../firebaseConfig";
 export async function loginWithGoogle() {
@@ -12,5 +17,10 @@ export async function loginWithGoogle() {
     });
   }
 }
+
+export const loginWithEmail = (email, password) =>
+  signInWithEmailAndPassword(auth, email, password);
+
+export const resetPassword = (email) => sendPasswordResetEmail(auth, email);
 
 export const logout = () => signOut(auth);
