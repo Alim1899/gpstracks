@@ -4,6 +4,7 @@ import { HomePage } from "@/components/Features/Trails/Pages/HomePage";
 import { LoginPage } from "@/components/Features/Auth/Pages/LoginPage";
 import { ProtectedRoute } from "@/components/Features/Auth/ProtectedRoute/ProtectedRoute";
 import { RegisterPage } from "./components/Features/Auth/Pages/RegisterPage";
+import { UploadPage } from "./components/Features/Upload/Pages/UploadPage";
 function App() {
   return (
     <BrowserRouter>
@@ -13,6 +14,7 @@ function App() {
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route element={<ProtectedRoute />}>
+            <Route path="upload" element={<UploadPage />} />
             <Route path="upload" element={<p>ატვირთვა მალე</p>} />
           </Route>
         </Route>
