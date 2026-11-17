@@ -1,0 +1,57 @@
+.page {
+  height: calc(100dvh - var(--header-height));
+  display: flex;
+  flex-direction: column;
+}
+
+.filters {
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(360px, 440px) 1fr;
+}
+
+.listPanel {
+  overflow-y: auto;
+  padding: var(--space-4);
+  border-right: 1px solid var(--color-border);
+}
+
+.mapPanel { min-height: 0; background: #dfe7e2; }
+
+.viewToggle { display: none; }
+
+/* მობილური: ერთი ხედი და გადამრთველი */
+@media (max-width: 768px) {
+  .content { grid-template-columns: 1fr; }
+  .listPanel { border-right: 0; }
+
+  .content[data-view="list"] .mapPanel { display: none; }
+  .content[data-view="map"] .listPanel { display: none; }
+
+  .viewToggle {
+    position: fixed;
+    bottom: var(--space-6);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1100;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 12px 20px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--color-text);
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.2);
+    cursor: pointer;
+  }
+}

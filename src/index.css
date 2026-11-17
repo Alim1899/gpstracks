@@ -17,6 +17,7 @@
   --space-4: 16px; --space-6: 24px; --space-8: 32px;
   --radius: 10px;
   --font: "Noto Sans Georgian", system-ui, sans-serif;
+  --header-height: 56px;
 }
 
 *, *::before, *::after { box-sizing: border-box; }

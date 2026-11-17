@@ -13,3 +13,8 @@
 .divider::after { content: ""; flex: 1; height: 1px; background: var(--color-border); }
 
 .centered { text-align: center; }
+
+
+.switch { margin: 0; text-align: center; font-size: 14px; color: var(--color-muted); }
+.switch a { color: var(--color-primary); font-weight: 600; text-decoration: none; }
+.switch a:hover { text-decoration: underline; }

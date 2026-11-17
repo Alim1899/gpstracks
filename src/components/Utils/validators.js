@@ -22,4 +22,12 @@ export function createValidator(rules) {
     }
     return errors;
   };
+}export function validateName(value) {
+  if (!value.trim()) return "შეიყვანე სახელი";
+  if (value.trim().length < 2) return "მინიმუმ 2 სიმბოლო";
+}
+
+export function validateConfirmPassword(value, values) {
+  if (!value) return "გაიმეორე პაროლი";
+  if (value !== values.password) return "პაროლები არ ემთხვევა";
 }

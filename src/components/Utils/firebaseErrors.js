@@ -5,6 +5,8 @@ const MESSAGES = {
   "auth/too-many-requests": "ძალიან ბევრი მცდელობა. სცადე რამდენიმე წუთში",
   "auth/network-request-failed": "ინტერნეტთან კავშირი ვერ დამყარდა",
   "auth/popup-blocked": "ბრაუზერმა ფანჯარა დაბლოკა. დაუშვი pop-up და სცადე თავიდან",
+  "auth/email-already-in-use": "ამ ელ-ფოსტით ანგარიში უკვე არსებობს",
+"auth/weak-password": "პაროლი ძალიან სუსტია",
 };
 
 // მომხმარებლის ქმედებაა და არა შეცდომა

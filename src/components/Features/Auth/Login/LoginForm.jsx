@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useForm } from "@/hooks/useForm";
-import { createValidator,validateEmail,validatePassword } from "@/components/Utils/validators";
-import { getAuthErrorMessage } from "@/components/Utils/firebaseErrors";
-import { Alert, Button,Input,PasswordInput } from "@/components/UI/Index";
-import styles from "./AuthForm.module.css";
+import { Link } from "react-router";
 import { useAuth } from "@/Context/useAuth";
-import { isInAppBrowser } from "@/components/Utils/browser";
+import { useForm } from "@/hooks/useForm";
+import { createValidator, validateEmail, validatePassword } from "@/components/Utils/validators";
+import { getAuthErrorMessage } from "@/components/Utils/firebaseErrors";
+import { Alert, Button, Input, PasswordInput } from "@/components/UI/Index";
+import styles from "./AuthForm.module.css";
+import { GoogleButton } from "../GoogleButton/GoogleButton";
 
 const validate = createValidator({
   email: validateEmail,
@@ -13,9 +14,8 @@ const validate = createValidator({
 });
 
 export function LoginForm({ onForgotPassword }) {
-  const { loginWithEmail, loginWithGoogle } = useAuth();
+  const { loginWithEmail } = useAuth();
   const [formError, setFormError] = useState(null);
-  const [googleLoading, setGoogleLoading] = useState(false);
 
   const { getFieldProps, handleSubmit, isSubmitting } = useForm(
     { email: "", password: "" },
@@ -31,20 +31,6 @@ export function LoginForm({ onForgotPassword }) {
     }
   });
 
-  async function onGoogleLogin() {
-    setFormError(null);
-    setGoogleLoading(true);
-    try {
-      await loginWithGoogle();
-    } catch (err) {
-      setFormError(getAuthErrorMessage(err.code));
-    } finally {
-      setGoogleLoading(false);
-    }
-  }
-
-  const busy = isSubmitting || googleLoading;
-
   return (
     <form className={styles.form} onSubmit={onSubmit} noValidate>
       <Alert variant="error">{formError}</Alert>
@@ -58,11 +44,7 @@ export function LoginForm({ onForgotPassword }) {
         {...getFieldProps("email")}
       />
 
-      <PasswordInput
-        label="პაროლი"
-        autoComplete="current-password"
-        {...getFieldProps("password")}
-      />
+      <PasswordInput label="პაროლი" autoComplete="current-password" {...getFieldProps("password")} />
 
       <div className={styles.forgotRow}>
         <Button variant="link" onClick={onForgotPassword}>
@@ -70,21 +52,17 @@ export function LoginForm({ onForgotPassword }) {
         </Button>
       </div>
 
-      <Button type="submit" fullWidth loading={isSubmitting} disabled={busy}>
+      <Button type="submit" fullWidth loading={isSubmitting}>
         შესვლა
       </Button>
 
       <div className={styles.divider}>ან</div>
 
-      {isInAppBrowser() ? (
-        <Alert variant="info">
-          Google-ით შესასვლელად გახსენი გვერდი Chrome-ში ან Safari-ში.
-        </Alert>
-      ) : (
-        <Button variant="outline" fullWidth loading={googleLoading} disabled={busy} onClick={onGoogleLogin}>
-          Google-ით შესვლა
-        </Button>
-      )}
+      <GoogleButton onError={setFormError} />
+
+      <p className={styles.switch}>
+        არ გაქვს ანგარიში? <Link to="/register">რეგისტრაცია</Link>
+      </p>
     </form>
   );
 }
