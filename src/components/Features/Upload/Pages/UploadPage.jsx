@@ -41,7 +41,7 @@ export function UploadPage() {
             </Button>
           </div>
 
-          <TrackMap coords={track.coords} showLocate/>
+         <TrackMap coords={track.coords} stats={track.stats} showLocate />
           <TrackStats stats={track.stats} />
 
           {/* შემდეგ ნაბიჯზე: ფორმა */}

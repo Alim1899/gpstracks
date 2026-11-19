@@ -5,6 +5,8 @@ import { FullscreenControl } from "../FullscreenControl/FullScreenControl";
 import styles from "./TrackMap.module.css";
 import { CompassControl } from "../CompassControl/CompassControl";
 import { LocateControl } from "../LocateControl/LocateControl";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { TrackStats } from "../TrackStats/TrackStats";
 function FitBounds({ positions }) {
   const map = useMap();
   useEffect(() => {
@@ -20,8 +22,9 @@ const pointStyle = (fillColor) => ({
   fillOpacity: 1,
 });
 
-export function TrackMap({ coords, showLocate = false }) {
+export function TrackMap({ coords,stats, showLocate = false }) {
   const [fullscreen, setFullscreen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(true);
   const toggleFullscreen = useCallback(() => setFullscreen((f) => !f), []);
   const positions = useMemo(
     () => coords.map(([lng, lat]) => [lat, lng]),
@@ -57,6 +60,22 @@ export function TrackMap({ coords, showLocate = false }) {
         <FullscreenControl active={fullscreen} onToggle={toggleFullscreen} />
         {showLocate && <LocateControl />}
           <CompassControl />
+          {fullscreen && stats && (
+        <div className={`${styles.sheet} ${sheetOpen ? styles.sheetOpen : ""}`}>
+          <button
+  type="button"
+  className={styles.sheetToggle}
+  onClick={() => setSheetOpen((o) => !o)}
+  aria-expanded={sheetOpen}
+  aria-label={sheetOpen ? "დეტალების დამალვა" : "დეტალების ჩვენება"}
+>
+  {sheetOpen ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
+</button>
+          <div className={styles.sheetBody}>
+            <TrackStats stats={stats} />
+          </div>
+        </div>
+      )}
       </MapContainer>
     </div>
   );
