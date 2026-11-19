@@ -1,0 +1,42 @@
+.compass {
+  position: absolute;
+  bottom: 28px;
+  right: 10px;
+  z-index: 1000;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.92);
+  box-shadow: 0 1px 5px rgb(0 0 0 / 0.35);
+  cursor: grab;
+  touch-action: none; /* მობილურზე თითით ტრიალისას გვერდი არ ისქროლოს */
+  user-select: none;
+}
+.compass:active { cursor: grabbing; }
+
+.ring {
+  position: absolute;
+  inset: 4px;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+}
+
+.north {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 700;
+  color: #c0392b;
+}
+
+.needle {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 18px solid #c0392b;
+  transform: translateX(-50%);
+}

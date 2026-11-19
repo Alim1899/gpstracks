@@ -1,0 +1,43 @@
+.button {
+  position: absolute;
+  top: 124px; /* fullscreen ღილაკის ქვეშ */
+  left: 10px;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 2px solid rgb(0 0 0 / 0.2);
+  border-radius: 4px;
+  background: #fff;
+  background-clip: padding-box;
+  color: #333;
+  cursor: pointer;
+}
+.button:hover { background-color: #f4f4f4; }
+.active { color: #1a73e8; }
+
+.marker { position: relative; width: 48px; height: 48px; }
+
+.dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #1a73e8;
+  box-shadow: 0 0 4px rgb(0 0 0 / 0.4);
+}
+
+/* მიმართულების კონუსი */
+.cone {
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(from -30deg, rgb(26 115 232 / 0.45) 0deg 60deg, transparent 60deg);
+  border-radius: 50%;
+  mask: radial-gradient(circle, #000 60%, transparent 70%);
+  transition: transform 0.2s linear;
+}
