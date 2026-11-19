@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { MapContainer, Polyline, CircleMarker, useMap } from "react-leaflet";
 import { MapLayers } from "../MapLayers/MapLayers";
+import { FullscreenControl } from "../FullscreenControl/FullScreenControl";
 import styles from "./TrackMap.module.css";
 
 function FitBounds({ positions }) {
@@ -14,15 +15,20 @@ function FitBounds({ positions }) {
 const pointStyle = (fillColor) => ({ color: "#fff", weight: 2, fillColor, fillOpacity: 1 });
 
 export function TrackMap({ coords }) {
+  const [fullscreen, setFullscreen] = useState(false);
+  const toggleFullscreen = useCallback(() => setFullscreen((f) => !f), []);
   const positions = useMemo(() => coords.map(([lng, lat]) => [lat, lng]), [coords]);
 
   return (
-    <MapContainer className={styles.map} center={positions[0]} zoom={12}>
-      <MapLayers />
-      <Polyline positions={positions} pathOptions={{ color: "#d9480f", weight: 4 }} />
-      <CircleMarker center={positions[0]} radius={7} pathOptions={pointStyle("#2f6b4f")} />
-      <CircleMarker center={positions.at(-1)} radius={7} pathOptions={pointStyle("#c0392b")} />
-      <FitBounds positions={positions} />
-    </MapContainer>
+    <div className={`${styles.wrapper} ${fullscreen ? styles.fullscreen : ""}`}>
+      <MapContainer className={styles.map} center={positions[0]} zoom={12}>
+        <MapLayers />
+        <Polyline positions={positions} pathOptions={{ color: "#d9480f", weight: 4 }} />
+        <CircleMarker center={positions[0]} radius={7} pathOptions={pointStyle("#2f6b4f")} />
+        <CircleMarker center={positions.at(-1)} radius={7} pathOptions={pointStyle("#c0392b")} />
+        <FitBounds positions={positions} />
+        <FullscreenControl active={fullscreen} onToggle={toggleFullscreen} />
+      </MapContainer>
+    </div>
   );
 }
