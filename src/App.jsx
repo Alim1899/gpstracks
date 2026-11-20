@@ -38,8 +38,9 @@ function App() {
             <Route path="register" element={<RegisterPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="upload" element={<UploadPage />} />
-              <Route path="*" element={<NotFoundPage />} />
+              
             </Route>
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
       </Suspense>

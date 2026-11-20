@@ -41,7 +41,7 @@ export function UploadPage() {
           <div className={styles.fileRow}>
             <span>{track.fileName}</span>
             <Button variant="link" onClick={() => setTrack(null)}>
-              შეცვლა
+           {t("common.change")}
             </Button>
           </div>
 

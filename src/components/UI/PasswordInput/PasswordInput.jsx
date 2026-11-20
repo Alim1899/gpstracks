@@ -16,7 +16,7 @@ const { t } = useTranslation();
       type={visible ? "text" : "password"}
       onKeyDown={checkCaps}
       onKeyUp={checkCaps}
-      hint={capsOn ? "Caps Lock ჩართულია" : props.hint}
+      hint={capsOn ? t("auth.capsLock") : props.hint}
       rightSlot={
         <button
           type="button"

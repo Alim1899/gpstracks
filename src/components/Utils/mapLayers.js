@@ -4,7 +4,7 @@ const OSM =
 export const BASE_LAYERS = [
   {
     id: "topo",
-    name: "ტოპო",
+   nameKey: "map.layers.topo",
     url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
     attribution: `${OSM}, SRTM | &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)`,
     maxNativeZoom: 17,
@@ -12,7 +12,7 @@ export const BASE_LAYERS = [
   },
   {
     id: "satellite",
-    name: "სატელიტი",
+    nameKey: "map.layers.satellite",
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri, Maxar, Earthstar Geographics",
     maxNativeZoom: 17,

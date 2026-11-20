@@ -38,7 +38,7 @@ export function TrackMap({ coords,stats, showLocate = false }) {
     () => coords.map(([lng, lat]) => [lat, lng]),
     [coords],
   );
-const t =useTranslation()
+const {t} =useTranslation()
   return (
     <div className={`${styles.wrapper} ${fullscreen ? styles.fullscreen : ""}`}>
       <MapContainer
