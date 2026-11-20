@@ -1,0 +1,75 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  container-type: inline-size;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 16px;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ენის ბლოკი */
+.langBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.langLabel { font-size: 14px; font-weight: 500; }
+
+.langGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--color-border);
+}
+.langTitle {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+/* გაგზავნა: ეკრანის ბოლოში მიმაგრებული */
+.submitBar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) 0 calc(var(--space-3) + env(safe-area-inset-bottom));
+  background: var(--color-bg);
+}
+
+.note {
+  margin: 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+.langGrid {
+  display: grid;
+  gap: var(--space-4);
+}
+@container (min-width: 640px) {
+  .langGrid { grid-template-columns: 1fr 1fr; }
+}

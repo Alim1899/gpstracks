@@ -5,3 +5,8 @@ export { Button } from "./Button/Button";
 export { Input } from "./Input/Input";
 export { PasswordInput } from "./PasswordInput/PasswordInput";
 export { LanguageSwitcher } from "./LanguageSwitcher/LanguageSwitcher";
+export { ChipGroup } from "./ChipGroup/ChipGroup";
+export { Textarea } from "./Textarea/Textarea";
+export { Collapsible } from "./Collapsible/Collapsible";
+export { SegmentedControl } from "./SegmentedControl/SegmentedControl";
+export { Checkbox } from "./Checkbox/Checkbox";

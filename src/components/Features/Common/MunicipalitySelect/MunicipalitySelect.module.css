@@ -1,0 +1,87 @@
+.selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-1);
+  padding: 0;
+  list-style: none;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 32px;
+  padding: 0 4px 0 var(--space-3);
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 14px;
+}
+
+.removeButton {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.removeButton:hover { background: rgb(255 255 255 / 0.2); }
+.removeButton:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
+
+.combobox { position: relative; }
+
+.list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  max-height: 320px;
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 10px var(--space-3);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.active { background: var(--color-bg); }
+
+.region {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 13px;
+  color: var(--color-muted);
+  text-align: right;
+}
+
+.occupied {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--color-error-soft);
+  color: var(--color-error);
+  font-size: 11px;
+}
+
+.message {
+  padding: 10px var(--space-3);
+  font-size: 14px;
+  color: var(--color-muted);
+}

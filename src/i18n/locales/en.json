@@ -85,7 +85,8 @@
       "tooLarge": "File is larger than 10 MB",
       "corrupted": "File is damaged or has an invalid format",
       "noTrack": "No track found in the file",
-      "unknown": "Couldn't read the file"
+      "unknown": "Couldn't read the file",
+      "trackTooLarge": "The track is too large to save"
     }
   },
   "map": {
@@ -119,5 +120,135 @@
     "m": "m",
     "h": "h",
     "min": "min"
+  },
+    "activities": {
+    "hiking": "Hiking",
+    "running": "Trail running",
+    "mountaineering": "Mountaineering",
+    "offroad": "Off-road"
+  },
+  "difficulty": {
+    "easy": "Easy",
+    "moderate": "Moderate",
+    "hard": "Hard",
+    "expert": "Expert",
+    "1A": "1A", "1B": "1B", "2A": "2A", "2B": "2B", "3A": "3A", "3B": "3B",
+    "4A": "4A", "4B": "4B", "5A": "5A", "5B": "5B", "6A": "6A", "6B": "6B",
+    "anyCar": "Any car",
+    "crossover": "Crossover",
+    "4x4": "4x4",
+    "prepared4x4": "Modified 4x4"
+  },
+  "adminRegions": {
+    "tbilisi": "Tbilisi",
+    "mtskheta-mtianeti": "Mtskheta-Mtianeti",
+    "kakheti": "Kakheti",
+    "kvemo-kartli": "Kvemo Kartli",
+    "shida-kartli": "Shida Kartli",
+    "samtskhe-javakheti": "Samtskhe-Javakheti",
+    "imereti": "Imereti",
+    "racha-lechkhumi": "Racha-Lechkhumi & Kvemo Svaneti",
+    "samegrelo-zemo-svaneti": "Samegrelo-Zemo Svaneti",
+    "guria": "Guria",
+    "adjara": "Adjara",
+    "abkhazia": "Autonomous Republic of Abkhazia"
+  },
+  "municipalities": {
+  "tbilisi": "Tbilisi",
+  "mtskheta": "Mtskheta", "dusheti": "Dusheti", "tianeti": "Tianeti", "kazbegi": "Kazbegi", "akhalgori": "Akhalgori",
+  "telavi": "Telavi", "akhmeta": "Akhmeta", "gurjaani": "Gurjaani", "dedoplistskaro": "Dedoplistskaro", "lagodekhi": "Lagodekhi", "sagarejo": "Sagarejo", "signagi": "Sighnaghi", "kvareli": "Kvareli",
+  "rustavi": "Rustavi", "bolnisi": "Bolnisi", "gardabani": "Gardabani", "dmanisi": "Dmanisi", "tetritskaro": "Tetritskaro", "marneuli": "Marneuli", "tsalka": "Tsalka",
+  "gori": "Gori", "kaspi": "Kaspi", "kareli": "Kareli", "khashuri": "Khashuri", "tskhinvali": "Tskhinvali", "java": "Java", "kurta": "Kurta", "eredvi": "Eredvi", "tighva": "Tighva",
+  "akhaltsikhe": "Akhaltsikhe", "adigeni": "Adigeni", "aspindza": "Aspindza", "akhalkalaki": "Akhalkalaki", "borjomi": "Borjomi", "ninotsminda": "Ninotsminda",
+  "kutaisi": "Kutaisi", "baghdati": "Baghdati", "vani": "Vani", "zestaponi": "Zestaponi", "terjola": "Terjola", "samtredia": "Samtredia", "sachkhere": "Sachkhere", "tkibuli": "Tkibuli", "tskaltubo": "Tskaltubo", "chiatura": "Chiatura", "kharagauli": "Kharagauli", "khoni": "Khoni",
+  "ambrolauri": "Ambrolauri", "oni": "Oni", "lentekhi": "Lentekhi", "tsageri": "Tsageri",
+  "zugdidi": "Zugdidi", "poti": "Poti", "abasha": "Abasha", "martvili": "Martvili", "mestia": "Mestia", "senaki": "Senaki", "chkhorotsku": "Chkhorotsku", "tsalenjikha": "Tsalenjikha", "khobi": "Khobi",
+  "ozurgeti": "Ozurgeti", "lanchkhuti": "Lanchkhuti", "chokhatauri": "Chokhatauri",
+  "batumi": "Batumi", "keda": "Keda", "kobuleti": "Kobuleti", "khelvachauri": "Khelvachauri", "shuakhevi": "Shuakhevi", "khulo": "Khulo",
+  "sokhumi": "Sokhumi", "gagra": "Gagra", "gudauta": "Gudauta", "gulripshi": "Gulripshi", "ochamchire": "Ochamchire", "tkvarcheli": "Tkvarcheli", "gali": "Gali"
+},
+"historicalRegions": {
+  "tusheti": "Tusheti",
+  "khevsureti": "Khevsureti",
+  "pshavi": "Pshavi",
+  "khevi": "Khevi"
+},
+  "routeTypes": {
+    "loop": "Loop",
+    "outAndBack": "Out & back",
+    "oneWay": "One way"
+  },
+  "months": {
+    "1": "Jan", "2": "Feb", "3": "Mar", "4": "Apr", "5": "May", "6": "Jun",
+    "7": "Jul", "8": "Aug", "9": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"
+  },
+  "features": {
+    "lake": "Lake",
+    "peak": "Peak",
+    "pass": "Pass",
+    "waterfall": "Waterfall",
+    "glacier": "Glacier",
+    "spring": "Water source",
+    "viewpoint": "Viewpoint",
+    "historic": "Fortress / monument"
+  },
+  "access": {
+    "publicTransport": "Public transport",
+    "anyCar": "Regular car",
+    "4x4": "4x4 only"
+  },
+  "overnight": {
+    "tent": "Tent",
+    "shelter": "Shelter",
+    "guesthouse": "Guesthouse"
+  },
+  "form": {
+  "optional": "optional",
+  "searchMunicipality": "Type a municipality name",
+  "typeMore": "Type at least 2 letters",
+  "noResults": "Nothing found",
+  "remove": "Remove {{name}}",
+  "occupied": "occupied",
+  "charsLeft": "{{count}} characters left"
+},
+"languages": { "ka": "ქართული", "en": "English" },
+"trailForm": {
+  "sectionMain": "Main information",
+  "sectionLocation": "Location",
+  "sectionDetails": "More details",
+  "contentLang": "Content language",
+  "bothLangs": "Both languages",
+  "title": "Title",
+  "titlePlaceholder": "e.g. Kelitsadi Lake from Truso Valley",
+  "description": "Description",
+  "descriptionPlaceholder": "How to get there, what's on the way, tips...",
+  "activity": "Category",
+  "difficulty": "Difficulty",
+  "chooseActivityFirst": "Choose a category first",
+  "municipalities": "Municipality",
+  "municipalitiesHint": "If the trail crosses several municipalities, select all of them",
+  "historicalRegions": "Historical region",
+  "routeType": "Route type",
+  "routeTypeHint": "Detected from the track. Change it if needed",
+  "seasons": "Best season",
+  "features": "What's on the way",
+  "access": "Access",
+  "overnight": "Overnight",
+  "submit": "Submit",
+  "moderationNote": "The trail will appear on the site after review",
+  "successTitle": "Trail submitted!",
+  "successText": "It will appear on the site after review. Thanks for sharing!",
+  "uploadAnother": "Upload another",
+  "backHome": "Back to home",
+  "errors": {
+    "titleRequired": "Enter a title",
+    "titleMin": "At least 3 characters",
+    "activityRequired": "Choose a category",
+    "difficultyRequired": "Choose a difficulty",
+    "municipalitiesRequired": "Choose at least one municipality",
+    "routeTypeRequired": "Choose a route type",
+    "saveFailed": "Couldn't save. Please try again",
+    "permission": "You don't have permission to save. Log out and log in again"
   }
+}
 }

@@ -6,7 +6,32 @@
   flex-direction: column;
   gap: var(--space-4);
 }
+/* ტრეკით: ორი სვეტი, უფრო ფართო გვერდი */
+.withTrack { max-width: 1600px; }
+
 .title { margin: 0; font-size: 24px; }
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.formColumn { min-width: 0; }
+
 .fileRow {
   display: flex;
   align-items: center;
@@ -18,4 +43,45 @@
   border-radius: var(--radius);
   font-weight: 500;
   overflow-wrap: anywhere;
+}
+
+/* დესკტოპი: მარცხნივ რუკა (სქროლისას ადგილზე რჩება), მარჯვნივ ფორმა */
+@media (min-width: 1024px) {
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: start;
+  }
+  .preview {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-4));
+  }
+}
+
+/* წარმატება */
+.success {
+  min-height: calc(100dvh - var(--header-height));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+}
+.successIcon { color: var(--color-success); }
+.successText { max-width: 420px; margin: 0 0 var(--space-2); color: var(--color-muted); }
+.successActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-4);
+}
+.homeLink { color: var(--color-primary); font-weight: 600; text-decoration: none; }
+.homeLink:hover { text-decoration: underline; }
+
+
+@media (min-width: 1400px) {
+  .layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }
