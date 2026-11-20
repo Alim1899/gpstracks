@@ -16,19 +16,19 @@ function distance3d(a, b) {
 export async function parseTrackFile(file) {
   const ext = file.name.split(".").pop().toLowerCase();
   if (!["gpx", "kml"].includes(ext)) {
-    throw new Error("მხარდაჭერილია მხოლოდ GPX და KML ფაილები");
+   throw new Error("upload.errors.unsupported");
   }
-  if (file.size > MAX_SIZE) throw new Error("ფაილი 10 MB-ზე დიდია");
+  if (file.size > MAX_SIZE) throw new Error("upload.errors.tooLarge");
 
   const xml = new DOMParser().parseFromString(await file.text(), "application/xml");
   if (xml.querySelector("parsererror")) {
-    throw new Error("ფაილი დაზიანებულია ან არასწორი ფორმატისაა");
+   throw new Error("upload.errors.corrupted");
   }
 
   const geojson = ext === "gpx" ? gpx(xml) : kml(xml);
 
  const { coords, times } = extractLineCoords(geojson);
-if (coords.length < 2) throw new Error("ფაილში ტრეკი ვერ მოიძებნა");
+if (coords.length < 2) throw new Error("upload.errors.noTrack");
 
 return {
   coords,
@@ -118,11 +118,13 @@ export function computeStats(coords) {
   };
 }
 
-export function formatDuration(hours) {
+export function formatDuration(hours, t) {
   const total = Math.round(hours * 60);
   const h = Math.floor(total / 60);
   const m = total % 60;
-  return h > 0 ? `${h}სთ ${m}წთ` : `${m}წთ`;
+  const H = t("units.h");
+  const M = t("units.min");
+  return h > 0 ? `${h}${H} ${m}${M}` : `${m}${M}`;
 }
 
 export function computeTimes(coords, times) {

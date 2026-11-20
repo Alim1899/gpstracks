@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export function useForm(initialValues, validate) {
+  const { t } = useTranslation();
   const [values, setValues] = useState(initialValues);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({}); // ინახება გასაღებები, არა ტექსტი
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,13 +35,13 @@ export function useForm(initialValues, validate) {
     }
   };
 
-  // ველს ერთი ხაზით აძლევს ყველაფერს, რაც სჭირდება
+  // ველს ერთი ხაზით აძლევს ყველაფერს, რაც სჭირდება. შეცდომა აქ ითარგმნება
   const getFieldProps = (name) => ({
     name,
     value: values[name],
     onChange: handleChange,
     onBlur: handleBlur,
-    error: touched[name] ? errors[name] : undefined,
+    error: touched[name] && errors[name] ? t(errors[name]) : undefined,
   });
 
   return { values, getFieldProps, handleSubmit, isSubmitting };

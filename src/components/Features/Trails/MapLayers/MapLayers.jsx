@@ -3,6 +3,7 @@ import { TileLayer, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import { BASE_LAYERS, DEFAULT_LAYER } from "@/components/Utils/mapLayers";
 import styles from "./MapLayers.module.css";
+import { useTranslation } from "react-i18next";
 
 // რუკის ცენტრის tile-ის URL მოცემული ფენისთვის
 function getThumbUrl(layer, map) {
@@ -28,9 +29,9 @@ export function MapLayers({ defaultLayer = DEFAULT_LAYER }) {
   }, []);
 
   const index = BASE_LAYERS.findIndex((layer) => layer.id === activeId);
-  const { id, name, ...tileProps } = BASE_LAYERS[index];
+  const { id, nameKey, ...tileProps } = BASE_LAYERS[index];
   const next = BASE_LAYERS[(index + 1) % BASE_LAYERS.length];
-
+const t = useTranslation();
   return (
     <>
       <TileLayer key={id} {...tileProps} />
@@ -40,8 +41,8 @@ export function MapLayers({ defaultLayer = DEFAULT_LAYER }) {
         type="button"
         className={styles.toggle}
         onClick={() => setActiveId(next.id)}
-        aria-label={`${next.name} ფენაზე გადართვა`}
-        title={`აქტიური: ${name}`}
+        aria-label={t("map.switchLayer", { name: t(next.nameKey) })}
+title={t("map.activeLayer", { name: t(nameKey) })}
       >
         <img src={getThumbUrl(next, map)} alt="" className={styles.thumb} />
 

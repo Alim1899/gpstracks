@@ -36,6 +36,8 @@
   color: #fff;
   font-weight: 600;
   text-decoration: none;
+  min-width: 140px;
+justify-content: center;
 }
 .uploadLink:hover { background: var(--color-primary-hover); }
 
@@ -73,4 +75,5 @@
 /* მობილურზე „ატვირთე“ მხოლოდ იკონით */
 @media (max-width: 480px) {
   .uploadText { display: none; }
+  .uploadLink { min-width: 0; }
 }

@@ -1,19 +1,18 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/Context/useAuth";
-import { getAuthErrorMessage } from "@/components/Utils/firebaseErrors";
+import { getAuthErrorKey } from "@/components/Utils/firebaseErrors";
 import { isInAppBrowser } from "@/components/Utils/browser";
 import { Alert, Button } from "@/components/UI/Index";
 
+// onError იღებს თარგმანის გასაღებს (ან null-ს)
 export function GoogleButton({ onError }) {
+  const { t } = useTranslation();
   const { loginWithGoogle } = useAuth();
   const [loading, setLoading] = useState(false);
 
   if (isInAppBrowser()) {
-    return (
-      <Alert variant="info">
-        Google-ით შესასვლელად გახსენი გვერდი Chrome-ში ან Safari-ში.
-      </Alert>
-    );
+    return <Alert variant="info">{t("auth.googleInApp")}</Alert>;
   }
 
   async function handleClick() {
@@ -22,7 +21,7 @@ export function GoogleButton({ onError }) {
     try {
       await loginWithGoogle();
     } catch (err) {
-      onError?.(getAuthErrorMessage(err.code));
+      onError?.(getAuthErrorKey(err.code));
     } finally {
       setLoading(false);
     }
@@ -30,7 +29,7 @@ export function GoogleButton({ onError }) {
 
   return (
     <Button variant="outline" fullWidth loading={loading} onClick={handleClick}>
-      Google-ით შესვლა
+      {t("auth.google")}
     </Button>
   );
 }

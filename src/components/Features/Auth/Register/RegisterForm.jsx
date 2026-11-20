@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/Context/useAuth";
 import { useForm } from "@/hooks/useForm";
 import {
@@ -9,7 +10,7 @@ import {
   validatePassword,
   validateConfirmPassword,
 } from "@/components/Utils/validators";
-import { getAuthErrorMessage } from "@/components/Utils/firebaseErrors";
+import { getAuthErrorKey } from "@/components/Utils/firebaseErrors";
 import { Alert, Button, Input, PasswordInput } from "@/components/UI/Index";
 import { GoogleButton } from "../GoogleButton/GoogleButton";
 import styles from "../Login/AuthForm.module.css";
@@ -22,8 +23,9 @@ const validate = createValidator({
 });
 
 export function RegisterForm() {
+  const { t } = useTranslation();
   const { register } = useAuth();
-  const [formError, setFormError] = useState(null);
+  const [formError, setFormError] = useState(null); // თარგმანის გასაღები
 
   const { getFieldProps, handleSubmit, isSubmitting } = useForm(
     { name: "", email: "", password: "", confirmPassword: "" },
@@ -35,18 +37,18 @@ export function RegisterForm() {
     try {
       await register(name.trim(), email.trim(), password);
     } catch (err) {
-      setFormError(getAuthErrorMessage(err.code));
+      setFormError(getAuthErrorKey(err.code));
     }
   });
 
   return (
     <form className={styles.form} onSubmit={onSubmit} noValidate>
-      <Alert variant="error">{formError}</Alert>
+      <Alert variant="error">{formError && t(formError)}</Alert>
 
-      <Input label="სახელი" autoComplete="name" {...getFieldProps("name")} />
+      <Input label={t("auth.name")} autoComplete="name" {...getFieldProps("name")} />
 
       <Input
-        label="ელ-ფოსტა"
+        label={t("auth.email")}
         type="email"
         inputMode="email"
         autoComplete="email"
@@ -55,28 +57,28 @@ export function RegisterForm() {
       />
 
       <PasswordInput
-        label="პაროლი"
+        label={t("auth.password")}
         autoComplete="new-password"
-        hint="მინიმუმ 6 სიმბოლო, ასო და ციფრი"
+        hint={t("auth.passwordHint")}
         {...getFieldProps("password")}
       />
 
       <PasswordInput
-        label="გაიმეორე პაროლი"
+        label={t("auth.confirmPassword")}
         autoComplete="new-password"
         {...getFieldProps("confirmPassword")}
       />
 
       <Button type="submit" fullWidth loading={isSubmitting}>
-        რეგისტრაცია
+        {t("auth.submitRegister")}
       </Button>
 
-      <div className={styles.divider}>ან</div>
+      <div className={styles.divider}>{t("common.or")}</div>
 
       <GoogleButton onError={setFormError} />
 
       <p className={styles.switch}>
-        უკვე გაქვს ანგარიში? <Link to="/login">შესვლა</Link>
+        {t("auth.haveAccount")} <Link to="/login">{t("auth.submitLogin")}</Link>
       </p>
     </form>
   );

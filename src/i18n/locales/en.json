@@ -1,0 +1,112 @@
+{
+  "nav": {
+    "home": "Home",
+    "upload": "Upload",
+    "login": "Log in",
+    "logout": "Log out"
+  },
+  "common": {
+    "or": "or",
+    "change": "Change"
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "loginSubtitle": "Sign in to your account",
+    "resetTitle": "Reset password",
+    "resetSubtitle": "We'll send you a reset link",
+    "registerTitle": "Sign up",
+    "registerSubtitle": "Create an account and share your tracks",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Repeat password",
+    "passwordHint": "At least 6 characters, a letter and a number",
+    "forgotPassword": "Forgot password?",
+    "submitLogin": "Log in",
+    "submitRegister": "Sign up",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "google": "Continue with Google",
+    "googleInApp": "To sign in with Google, open this page in Chrome or Safari.",
+    "sendResetLink": "Send link",
+    "backToLogin": "← Back to log in",
+    "resetSent": "If this email is registered, you'll receive a reset link shortly.",
+    "capsLock": "Caps Lock is on",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
+  "validation": {
+    "emailRequired": "Enter your email",
+    "emailInvalid": "Invalid email format",
+    "passwordRequired": "Enter your password",
+    "passwordMin": "At least 6 characters",
+    "passwordLetter": "Must contain at least one letter",
+    "passwordDigit": "Must contain at least one number",
+    "nameRequired": "Enter your name",
+    "nameMin": "At least 2 characters",
+    "confirmRequired": "Repeat your password",
+    "passwordsMismatch": "Passwords don't match"
+  },
+  "authErrors": {
+    "invalidCredential": "Incorrect email or password",
+    "invalidEmail": "Invalid email format",
+    "userDisabled": "This account has been disabled",
+    "tooManyRequests": "Too many attempts. Try again in a few minutes",
+    "network": "Couldn't connect to the internet",
+    "popupBlocked": "The browser blocked the window. Allow pop-ups and try again",
+    "emailInUse": "An account with this email already exists",
+    "weakPassword": "Password is too weak",
+    "unknown": "Something went wrong. Please try again"
+  },
+  "home": {
+    "filters": "Filters (next step)",
+    "list": "Trail list",
+    "map": "Map",
+    "showMap": "Show map",
+    "showList": "Show list"
+  },
+  "upload": {
+    "title": "Upload a track",
+    "drop": "Drop a GPX or KML file",
+    "choose": "Choose file",
+    "errors": {
+      "unsupported": "Only GPX and KML files are supported",
+      "tooLarge": "File is larger than 10 MB",
+      "corrupted": "File is damaged or has an invalid format",
+      "noTrack": "No track found in the file",
+      "unknown": "Couldn't read the file"
+    }
+  },
+  "map": {
+    "layers": {
+      "topo": "Topographic",
+      "satellite": "Satellite"
+    },
+    "switchLayer": "Switch to {{name}}",
+    "activeLayer": "Active: {{name}}",
+    "fullscreenEnter": "Fullscreen",
+    "fullscreenExit": "Exit fullscreen (Esc)",
+    "compass": "Map orientation",
+    "compassHint": "Drag to rotate. Click to reset to north",
+    "myLocation": "My location",
+    "geoUnsupported": "Your browser can't determine location",
+    "geoDenied": "Location access denied",
+    "showDetails": "Show details",
+    "hideDetails": "Hide details"
+  },
+  "stats": {
+    "distance": "Distance",
+    "gain": "Ascent",
+    "loss": "Descent",
+    "maxEle": "Max elevation",
+    "estimated": "Estimated time",
+    "authorTime": "Author's time",
+    "movingTime": "Moving: {{time}}"
+  },
+  "units": {
+    "km": "km",
+    "m": "m",
+    "h": "h",
+    "min": "min"
+  }
+}

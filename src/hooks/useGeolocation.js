@@ -7,7 +7,7 @@ export function useGeolocation() {
 
   const start = useCallback(() => {
     if (!navigator.geolocation) {
-      setError("ბრაუზერი მდებარეობას ვერ განსაზღვრავს");
+      setError("map.geoUnsupported");
       return;
     }
     setError(null);
@@ -18,9 +18,13 @@ export function useGeolocation() {
     if (!watching) return;
     const id = navigator.geolocation.watchPosition(
       ({ coords }) =>
-        setPosition({ lat: coords.latitude, lng: coords.longitude, accuracy: coords.accuracy }),
-      () => setError("მდებარეობაზე წვდომა არ არის"),
-      { enableHighAccuracy: true, maximumAge: 5000 }
+        setPosition({
+          lat: coords.latitude,
+          lng: coords.longitude,
+          accuracy: coords.accuracy,
+        }),
+      () => setError("map.geoDenied"),
+      { enableHighAccuracy: true, maximumAge: 5000 },
     );
     return () => navigator.geolocation.clearWatch(id);
   }, [watching]);

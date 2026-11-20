@@ -5,6 +5,7 @@ import { LocateFixed } from "lucide-react";
 import { useDeviceHeading } from "@/hooks/useDeviceHeading";
 import styles from "./LocateControl.module.css";
 import { useGeolocation } from "@/hooks/useGeolocation";
+import { useTranslation } from "react-i18next";
 
 export function LocateControl() {
   const map = useMap();
@@ -43,9 +44,9 @@ export function LocateControl() {
             <div class="${styles.dot}"></div>
           </div>`,
       }),
-    [heading]
+    [heading],
   );
-
+  const t = useTranslation();
   return (
     <>
       <button
@@ -53,8 +54,8 @@ export function LocateControl() {
         type="button"
         className={`${styles.button} ${watching ? styles.active : ""}`}
         onClick={handleClick}
-        aria-label="ჩემი მდებარეობა"
-        title={error ?? "ჩემი მდებარეობა"}
+        aria-label={t("map.myLocation")}
+        title={error ? t(error) : t("map.myLocation")}
       >
         <LocateFixed size={18} />
       </button>
@@ -66,7 +67,12 @@ export function LocateControl() {
             radius={position.accuracy}
             pathOptions={{ color: "#1a73e8", weight: 1, fillOpacity: 0.1 }}
           />
-          <Marker position={[position.lat, position.lng]} icon={icon} interactive={false} rotateWithView />
+          <Marker
+            position={[position.lat, position.lng]}
+            icon={icon}
+            interactive={false}
+            rotateWithView
+          />
         </>
       )}
     </>

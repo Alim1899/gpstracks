@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useMap, useMapEvent } from "react-leaflet";
 import L from "leaflet";
 import styles from "./CompassControl.module.css";
+import { useTranslation } from "react-i18next";
 
 // კუთხე წრის ცენტრიდან მაჩვენებლამდე: 0° = ზემოთ, საათის ისრის მიმართულებით
 function pointerAngle(e, el) {
@@ -43,10 +44,11 @@ export function CompassControl() {
 
   function onPointerUp() {
     // უბრალო დაჭერა (გადატრიალების გარეშე) ჩრდილოეთს აბრუნებს
-    if (drag.current && !drag.current.moved) map.setBearing(0, { animate: true });
+    if (drag.current && !drag.current.moved)
+      map.setBearing(0, { animate: true });
     drag.current = null;
   }
-
+  const t = useTranslation();
   return (
     <div
       ref={ref}
@@ -56,13 +58,16 @@ export function CompassControl() {
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
       role="slider"
-      aria-label="რუკის მიმართულება"
       aria-valuenow={Math.round(bearing)}
       aria-valuemin={0}
       aria-valuemax={359}
-      title="გადაატრიალე. დაჭერით ჩრდილოეთზე დაბრუნდება"
+      aria-label={t("map.compass")}
+      title={t("map.compassHint")}
     >
-      <div className={styles.ring} style={{ transform: `rotate(${bearing}deg)` }}>
+      <div
+        className={styles.ring}
+        style={{ transform: `rotate(${bearing}deg)` }}
+      >
         <span className={styles.north}>N</span>
         <span className={styles.needle} />
       </div>

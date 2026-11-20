@@ -1,12 +1,12 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { fileURLToPath, URL } from "node:url";
 import basicSsl from "@vitejs/plugin-basic-ssl";
+import { fileURLToPath, URL } from "node:url";
 
-
-export default defineConfig({
-  plugins: [react(), basicSsl],
+export default defineConfig(({ mode }) => ({
+  // HTTPS მხოლოდ ტელეფონზე ტესტირებისას
+  plugins: [react(), mode === "phone" && basicSsl()].filter(Boolean),
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
-});
+}));

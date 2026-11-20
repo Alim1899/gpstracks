@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/Context/useAuth";
 import { useForm } from "@/hooks/useForm";
 import { createValidator, validateEmail, validatePassword } from "@/components/Utils/validators";
-import { getAuthErrorMessage } from "@/components/Utils/firebaseErrors";
+import { getAuthErrorKey } from "@/components/Utils/firebaseErrors";
 import { Alert, Button, Input, PasswordInput } from "@/components/UI/Index";
 import styles from "./AuthForm.module.css";
 import { GoogleButton } from "../GoogleButton/GoogleButton";
@@ -14,8 +15,9 @@ const validate = createValidator({
 });
 
 export function LoginForm({ onForgotPassword }) {
+  const { t } = useTranslation();
   const { loginWithEmail } = useAuth();
-  const [formError, setFormError] = useState(null);
+  const [formError, setFormError] = useState(null); // თარგმანის გასაღები
 
   const { getFieldProps, handleSubmit, isSubmitting } = useForm(
     { email: "", password: "" },
@@ -27,16 +29,16 @@ export function LoginForm({ onForgotPassword }) {
     try {
       await loginWithEmail(email.trim(), password);
     } catch (err) {
-      setFormError(getAuthErrorMessage(err.code));
+      setFormError(getAuthErrorKey(err.code));
     }
   });
 
   return (
     <form className={styles.form} onSubmit={onSubmit} noValidate>
-      <Alert variant="error">{formError}</Alert>
+      <Alert variant="error">{formError && t(formError)}</Alert>
 
       <Input
-        label="ელ-ფოსტა"
+        label={t("auth.email")}
         type="email"
         inputMode="email"
         autoComplete="email"
@@ -44,24 +46,28 @@ export function LoginForm({ onForgotPassword }) {
         {...getFieldProps("email")}
       />
 
-      <PasswordInput label="პაროლი" autoComplete="current-password" {...getFieldProps("password")} />
+      <PasswordInput
+        label={t("auth.password")}
+        autoComplete="current-password"
+        {...getFieldProps("password")}
+      />
 
       <div className={styles.forgotRow}>
         <Button variant="link" onClick={onForgotPassword}>
-          დაგავიწყდა პაროლი?
+          {t("auth.forgotPassword")}
         </Button>
       </div>
 
       <Button type="submit" fullWidth loading={isSubmitting}>
-        შესვლა
+        {t("auth.submitLogin")}
       </Button>
 
-      <div className={styles.divider}>ან</div>
+      <div className={styles.divider}>{t("common.or")}</div>
 
       <GoogleButton onError={setFormError} />
 
       <p className={styles.switch}>
-        არ გაქვს ანგარიში? <Link to="/register">რეგისტრაცია</Link>
+        {t("auth.noAccount")} <Link to="/register">{t("auth.submitRegister")}</Link>
       </p>
     </form>
   );

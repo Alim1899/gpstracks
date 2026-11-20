@@ -1,15 +1,11 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-
+import "@/i18n";
 import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./Context/AuthProvider.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// UNTOUCHABLE|||||||||||||||||||||||||||||\
-import "leaflet/dist/leaflet.css";
-import "@/components/Utils/leafletSetup";
-import "leaflet-rotate";
-// UNTOUCHABLE|||||||||||||||||||||||||||||\
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

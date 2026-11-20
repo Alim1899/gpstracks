@@ -7,18 +7,23 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:phone": "vite --mode phone --host"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.107.1",
     "@tmcw/togeojson": "^7.1.4",
     "dotenv": "^18.0.10",
     "firebase": "^13.4.0",
+    "i18n": "^0.15.4",
+    "i18next": "^27.2.2",
+    "i18next-browser-languagedetector": "^8.3.1",
     "leaflet": "^1.9.4",
     "leaflet-rotate": "^0.6.2",
     "lucide-react": "^1.73.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
+    "react-i18next": "^18.0.3",
     "react-leaflet": "^5.0.0",
     "react-router": "^8.5.1"
   },

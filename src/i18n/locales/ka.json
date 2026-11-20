@@ -1,0 +1,112 @@
+{
+  "nav": {
+    "home": "მთავარი გვერდი",
+    "upload": "ატვირთვა",
+    "login": "შესვლა",
+    "logout": "გასვლა"
+  },
+  "common": {
+    "or": "ან",
+    "change": "შეცვლა"
+  },
+  "auth": {
+    "loginTitle": "შესვლა",
+    "loginSubtitle": "შედი შენს ანგარიშზე",
+    "resetTitle": "პაროლის აღდგენა",
+    "resetSubtitle": "გამოგიგზავნით აღდგენის ბმულს",
+    "registerTitle": "რეგისტრაცია",
+    "registerSubtitle": "შექმენი ანგარიში და გააზიარე შენი ტრეკები",
+    "name": "სახელი",
+    "email": "ელ-ფოსტა",
+    "password": "პაროლი",
+    "confirmPassword": "გაიმეორე პაროლი",
+    "passwordHint": "მინიმუმ 6 სიმბოლო, ასო და ციფრი",
+    "forgotPassword": "დაგავიწყდა პაროლი?",
+    "submitLogin": "შესვლა",
+    "submitRegister": "რეგისტრაცია",
+    "noAccount": "არ გაქვს ანგარიში?",
+    "haveAccount": "უკვე გაქვს ანგარიში?",
+    "google": "Google-ით შესვლა",
+    "googleInApp": "Google-ით შესასვლელად გახსენი გვერდი Chrome-ში ან Safari-ში.",
+    "sendResetLink": "ბმულის გაგზავნა",
+    "backToLogin": "← შესვლაზე დაბრუნება",
+    "resetSent": "თუ ეს ელ-ფოსტა რეგისტრირებულია, აღდგენის ბმულს მალე მიიღებ.",
+    "capsLock": "Caps Lock ჩართულია",
+    "showPassword": "პაროლის ჩვენება",
+    "hidePassword": "პაროლის დამალვა"
+  },
+  "validation": {
+    "emailRequired": "შეიყვანე ელ-ფოსტა",
+    "emailInvalid": "ელ-ფოსტის ფორმატი არასწორია",
+    "passwordRequired": "შეიყვანე პაროლი",
+    "passwordMin": "მინიმუმ 6 სიმბოლო",
+    "passwordLetter": "უნდა შეიცავდეს მინიმუმ ერთ ასოს",
+    "passwordDigit": "უნდა შეიცავდეს მინიმუმ ერთ ციფრს",
+    "nameRequired": "შეიყვანე სახელი",
+    "nameMin": "მინიმუმ 2 სიმბოლო",
+    "confirmRequired": "გაიმეორე პაროლი",
+    "passwordsMismatch": "პაროლები არ ემთხვევა"
+  },
+  "authErrors": {
+    "invalidCredential": "ელ-ფოსტა ან პაროლი არასწორია",
+    "invalidEmail": "ელ-ფოსტის ფორმატი არასწორია",
+    "userDisabled": "ეს ანგარიში დაბლოკილია",
+    "tooManyRequests": "ძალიან ბევრი მცდელობა. სცადე რამდენიმე წუთში",
+    "network": "ინტერნეტთან კავშირი ვერ დამყარდა",
+    "popupBlocked": "ბრაუზერმა ფანჯარა დაბლოკა. დაუშვი pop-up და სცადე თავიდან",
+    "emailInUse": "ამ ელ-ფოსტით ანგარიში უკვე არსებობს",
+    "weakPassword": "პაროლი ძალიან სუსტია",
+    "unknown": "დაფიქსირდა შეცდომა. სცადე თავიდან"
+  },
+  "home": {
+    "filters": "ფილტრები (შემდეგ ნაბიჯზე)",
+    "list": "ბილიკების სია",
+    "map": "რუკა",
+    "showMap": "რუკაზე ნახვა",
+    "showList": "სიის ნახვა"
+  },
+  "upload": {
+    "title": "ტრეკის ატვირთვა",
+    "drop": "ჩააგდე GPX ან KML ფაილი",
+    "choose": "აირჩიე ფაილი",
+    "errors": {
+      "unsupported": "მხარდაჭერილია მხოლოდ GPX და KML ფაილები",
+      "tooLarge": "ფაილი 10 MB-ზე დიდია",
+      "corrupted": "ფაილი დაზიანებულია ან არასწორი ფორმატისაა",
+      "noTrack": "ფაილში ტრეკი ვერ მოიძებნა",
+      "unknown": "ფაილის წაკითხვა ვერ მოხერხდა"
+    }
+  },
+  "map": {
+    "layers": {
+      "topo": "ტოპოგრაფიული",
+      "satellite": "სატელიტი"
+    },
+    "switchLayer": "{{name}} ფენაზე გადართვა",
+    "activeLayer": "აქტიური: {{name}}",
+    "fullscreenEnter": "სრულ ეკრანზე გაშლა",
+    "fullscreenExit": "სრული ეკრანიდან გამოსვლა (Esc)",
+    "compass": "რუკის მიმართულება",
+    "compassHint": "გადაატრიალე. დაჭერით ჩრდილოეთზე დაბრუნდება",
+    "myLocation": "ჩემი მდებარეობა",
+    "geoUnsupported": "ბრაუზერი მდებარეობას ვერ განსაზღვრავს",
+    "geoDenied": "მდებარეობაზე წვდომა არ არის",
+    "showDetails": "დეტალების ჩვენება",
+    "hideDetails": "დეტალების დამალვა"
+  },
+  "stats": {
+    "distance": "მანძილი",
+    "gain": "აღმართი",
+    "loss": "დაღმართი",
+    "maxEle": "მაქს. სიმაღლე",
+    "estimated": "სავარაუდო დრო",
+    "authorTime": "ავტორის დრო",
+    "movingTime": "მოძრაობაში: {{time}}"
+  },
+  "units": {
+    "km": "კმ",
+    "m": "მ",
+    "h": "სთ",
+    "min": "წთ"
+  }
+}

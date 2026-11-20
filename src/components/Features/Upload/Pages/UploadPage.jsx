@@ -5,6 +5,7 @@ import { FileDropzone } from "../FileDropzone/FileDropzone";
 import { TrackMap } from "@/components/Features/Trails/TrackMap/TrackMap";
 import { TrackStats } from "@/components/Features/Trails/TrackStats/TrackStats";
 import styles from "./UploadPage.module.css";
+import { useTranslation } from "react-i18next";
 
 export function UploadPage() {
   const [track, setTrack] = useState(null); // { fileName, coords, stats }
@@ -18,17 +19,20 @@ export function UploadPage() {
       const result = await parseTrackFile(file);
       setTrack({ fileName: file.name, ...result });
     } catch (err) {
-      setError(err.message);
+      setError(
+        err.message?.startsWith("upload.")
+          ? err.message
+          : "upload.errors.unknown",
+      );
     } finally {
       setParsing(false);
     }
   }
-
+  const { t } = useTranslation();
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>ტრეკის ატვირთვა</h1>
-
-      <Alert variant="error">{error}</Alert>
+      <h1 className={styles.title}>{t("upload.title")}</h1>
+      <Alert variant="error">{error && t(error)}</Alert>
 
       {!track ? (
         <FileDropzone onFile={handleFile} disabled={parsing} />
@@ -41,7 +45,7 @@ export function UploadPage() {
             </Button>
           </div>
 
-         <TrackMap coords={track.coords} stats={track.stats} showLocate />
+          <TrackMap coords={track.coords} stats={track.stats} showLocate />
           <TrackStats stats={track.stats} />
 
           {/* შემდეგ ნაბიჯზე: ფორმა */}

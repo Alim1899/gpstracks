@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { FileUp } from "lucide-react";
 import { Button } from "@/components/UI/Index";
 import styles from "./FileDropzone.module.css";
-
+import { useTranslation } from "react-i18next";
 export function FileDropzone({ onFile, disabled }) {
   const inputRef = useRef(null);
   const [dragging, setDragging] = useState(false);
@@ -11,7 +11,7 @@ export function FileDropzone({ onFile, disabled }) {
     const file = files?.[0];
     if (file) onFile(file);
   };
-
+const { t } = useTranslation();
   return (
     <div
       className={`${styles.zone} ${dragging ? styles.dragging : ""}`}
@@ -27,10 +27,10 @@ export function FileDropzone({ onFile, disabled }) {
       }}
     >
       <FileUp size={36} />
-      <p className={styles.title}>ჩააგდე GPX ან KML ფაილი</p>
-      <p className={styles.hint}>ან</p>
+     <p className={styles.title}>{t("upload.drop")}</p>
+<p className={styles.hint}>{t("common.or")}</p>
       <Button variant="outline" onClick={() => inputRef.current?.click()} loading={disabled}>
-        აირჩიე ფაილი
+       {t("upload.choose")}
       </Button>
       {/* accept განზრახ არ არის: Android და iOS GPX-ს ხშირად ნაცრისფრად აჩვენებს. ფორმატს parser ამოწმებს */}
       <input

@@ -1,3 +1,9 @@
+// UNTOUCHABLE|||||||||||||||||||||||||||||\
+import "leaflet/dist/leaflet.css";
+import "@/components/Utils/leafletSetup";
+import "leaflet-rotate";
+// UNTOUCHABLE|||||||||||||||||||||||||||||\
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MapContainer, Polyline, CircleMarker, useMap } from "react-leaflet";
 import { MapLayers } from "../MapLayers/MapLayers";
@@ -7,6 +13,8 @@ import { CompassControl } from "../CompassControl/CompassControl";
 import { LocateControl } from "../LocateControl/LocateControl";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { TrackStats } from "../TrackStats/TrackStats";
+import { useTranslation } from "react-i18next";
+
 function FitBounds({ positions }) {
   const map = useMap();
   useEffect(() => {
@@ -30,7 +38,7 @@ export function TrackMap({ coords,stats, showLocate = false }) {
     () => coords.map(([lng, lat]) => [lat, lng]),
     [coords],
   );
-
+const t =useTranslation()
   return (
     <div className={`${styles.wrapper} ${fullscreen ? styles.fullscreen : ""}`}>
       <MapContainer
@@ -67,8 +75,7 @@ export function TrackMap({ coords,stats, showLocate = false }) {
   className={styles.sheetToggle}
   onClick={() => setSheetOpen((o) => !o)}
   aria-expanded={sheetOpen}
-  aria-label={sheetOpen ? "დეტალების დამალვა" : "დეტალების ჩვენება"}
->
+aria-label={sheetOpen ? t("map.hideDetails") : t("map.showDetails")}>
   {sheetOpen ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
 </button>
           <div className={styles.sheetBody}>
