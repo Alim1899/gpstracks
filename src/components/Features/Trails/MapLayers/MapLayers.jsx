@@ -31,7 +31,7 @@ export function MapLayers({ defaultLayer = DEFAULT_LAYER }) {
   const index = BASE_LAYERS.findIndex((layer) => layer.id === activeId);
   const { id, nameKey, ...tileProps } = BASE_LAYERS[index];
   const next = BASE_LAYERS[(index + 1) % BASE_LAYERS.length];
-const t = useTranslation();
+  const {t} = useTranslation();
   return (
     <>
       <TileLayer key={id} {...tileProps} />
@@ -42,10 +42,9 @@ const t = useTranslation();
         className={styles.toggle}
         onClick={() => setActiveId(next.id)}
         aria-label={t("map.switchLayer", { name: t(next.nameKey) })}
-title={t("map.activeLayer", { name: t(nameKey) })}
+        title={t("map.activeLayer", { name: t(nameKey) })}
       >
         <img src={getThumbUrl(next, map)} alt="" className={styles.thumb} />
-
       </button>
     </>
   );

@@ -2,7 +2,7 @@ import { Link, Outlet, useLocation } from "react-router";
 import { Upload, LogOut, Mountain } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/Context/useAuth";
-import { LanguageSwitcher } from "@/components/UI/Index";
+import { ErrorBoundary, LanguageSwitcher } from "@/components/UI/Index";
 import styles from "./Layout.module.css";
 
 const Layout = () => {
@@ -63,7 +63,9 @@ const Layout = () => {
       </header>
 
       <main className={styles.main}>
-        <Outlet />
+        <ErrorBoundary key={pathname}>
+          <Outlet />
+        </ErrorBoundary>
       </main>
     </div>
   );

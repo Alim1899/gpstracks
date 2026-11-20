@@ -46,7 +46,7 @@ export function LocateControl() {
       }),
     [heading],
   );
-  const t = useTranslation();
+  const {t} = useTranslation();
   return (
     <>
       <button

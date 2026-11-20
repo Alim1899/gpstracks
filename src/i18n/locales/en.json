@@ -7,8 +7,19 @@
   },
   "common": {
     "or": "or",
-    "change": "Change"
+    "change": "Change",
+    "loading": "Loading..."
   },
+  "notFound": {
+  "title": "Page not found",
+  "text": "This trail leads nowhere. The link may be wrong or the page was removed.",
+  "back": "Back to home"
+},
+"errorPage": {
+  "title": "Something went wrong",
+  "text": "The page couldn't be loaded. Please try again.",
+  "reload": "Reload"
+},
   "auth": {
     "loginTitle": "Log in",
     "loginSubtitle": "Sign in to your account",

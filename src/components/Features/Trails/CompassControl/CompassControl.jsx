@@ -48,7 +48,7 @@ export function CompassControl() {
       map.setBearing(0, { animate: true });
     drag.current = null;
   }
-  const t = useTranslation();
+  const {t} = useTranslation();
   return (
     <div
       ref={ref}

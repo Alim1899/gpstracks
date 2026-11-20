@@ -2,25 +2,35 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router";
 import Layout from "@/components/Layout/Layout";
 import { ProtectedRoute } from "@/components/Features/Auth/ProtectedRoute/ProtectedRoute";
-
+import { Loader } from "./components/UI/Index";
 // გვერდები ცალკე ფაილებად; named export-ს lazy-სთვის default-ად ვაქცევთ
 const HomePage = lazy(() =>
-  import("@/components/Features/Trails/Pages/HomePage").then((m) => ({ default: m.HomePage }))
+  import("@/components/Features/Trails/Pages/HomePage").then((m) => ({
+    default: m.HomePage,
+  })),
 );
 const LoginPage = lazy(() =>
-  import("@/components/Features/Auth/Pages/LoginPage").then((m) => ({ default: m.LoginPage }))
+  import("@/components/Features/Auth/Pages/LoginPage").then((m) => ({
+    default: m.LoginPage,
+  })),
 );
 const RegisterPage = lazy(() =>
-  import("@/components/Features/Auth/Pages/RegisterPage").then((m) => ({ default: m.RegisterPage }))
+  import("@/components/Features/Auth/Pages/RegisterPage").then((m) => ({
+    default: m.RegisterPage,
+  })),
 );
 const UploadPage = lazy(() =>
-  import("@/components/Features/Upload/Pages/UploadPage").then((m) => ({ default: m.UploadPage }))
+  import("@/components/Features/Upload/Pages/UploadPage").then((m) => ({
+    default: m.UploadPage,
+  })),
 );
-
+const NotFoundPage = lazy(() =>
+  import("@/components/Features/Common/Pages/NotFoundPage").then((m) => ({ default: m.NotFoundPage }))
+);
 function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={null}>
+      <Suspense fallback={<Loader fullPage />}>
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<HomePage />} />
@@ -28,6 +38,7 @@ function App() {
             <Route path="register" element={<RegisterPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="upload" element={<UploadPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Route>
         </Routes>

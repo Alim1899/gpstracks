@@ -5,7 +5,7 @@ import { useAuth } from "@/Context/useAuth";
 import { LoginForm } from "../Login/LoginForm";
 import { AuthCard } from "../AuthCard/AuthCard";
 import { ForgotPasswordForm } from "../Login/ForgotPassword";
-
+import { Loader } from "@/components/UI/Index";
 const VIEWS = {
   login: { title: "auth.loginTitle", subtitle: "auth.loginSubtitle" },
   reset: { title: "auth.resetTitle", subtitle: "auth.resetSubtitle" },
@@ -17,7 +17,7 @@ export function LoginPage() {
   const { user, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) return null;
+  if (loading) return <Loader/>;
   if (user) return <Navigate to={location.state?.from ?? "/"} replace />;
 
   return (

@@ -26,7 +26,7 @@ export function FullscreenControl({ active, onToggle }) {
       document.body.style.overflow = "";
     };
   }, [active, map, onToggle]);
-  const t = useTranslation();
+  const {t} = useTranslation();
   return (
     <button
       ref={buttonRef}
