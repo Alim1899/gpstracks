@@ -1,6 +1,7 @@
 .wrapper {
   position: relative;
-  height: var(--map-height, clamp(320px, 60vh, 600px));/* გვერდს შეუძლია შეცვალოს; სხვაგან ძველი მნიშვნელობა */  border-radius: 12px;
+  height: var(--map-height, clamp(320px, 60vh, 600px));/* გვერდს შეუძლია შეცვალოს; სხვაგან ძველი მნიშვნელობა */ 
+   border-radius: 12px;
   overflow: hidden;
 }
 

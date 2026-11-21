@@ -6,7 +6,7 @@ import { useAuth } from "@/Context/useAuth";
 import { parseTrackFile } from "@/components/Utils/trackParser";
 import { detectRouteType } from "@/components/Utils/geometry";
 import { estimateHours } from "@/components/Utils/trailOptions";
-import { buildTrailDocs, createTrail } from "@/components/Services/trailService";
+import { buildTrailDocs, createTrail,saveOriginalFile } from "@/components/Services/trailService";
 import { Alert, Button } from "@/components/UI/Index";
 import { FileDropzone } from "../FileDropzone/FileDropzone";
 import { TrailForm } from "../TrailForm/TrailForm";
@@ -14,7 +14,6 @@ import { TrackMap } from "@/components/Features/Trails/TrackMap/TrackMap";
 import { TrackStats } from "@/components/Features/Trails/TrackStats/TrackStats";
 import styles from "./UploadPage.module.css";
 import { detectMunicipalities, loadMunicipalities } from "@/components/Utils/municipalityDetect";
-
 export function UploadPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -29,6 +28,7 @@ const [savedId, setSavedId] = useState(null);
     try {
       const result = await parseTrackFile(file);
             setTrack({
+              file,
         fileName: file.name,
         ...result,
         routeType: detectRouteType(result.coords, result.stats.distanceKm),
@@ -65,6 +65,7 @@ const [savedId, setSavedId] = useState(null);
 
   async function handleSave(input) {
     const id = await createTrail(buildTrailDocs(input, track, user));
+    await saveOriginalFile(id, track.file, user); // ვერ შეინახა → ბილიკი მაინც შენახულია
     setSavedId(id);
     window.scrollTo({ top: 0 });
   }

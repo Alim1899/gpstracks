@@ -9,14 +9,15 @@ import {
   GeoPoint,
   getDoc,
 } from "firebase/firestore";
-import { db } from "@/firebaseConfig";
+import { db, rtdb} from "@/firebaseConfig";
 import { simplify, encodeTrack, getBounds,decodeTrack } from "@/components/Utils/geometry";
 import {
   estimateHours,
   getDifficultyLevel,
 } from "@/components/Utils/trailOptions";
 import { getAdminRegions, OCCUPIED } from "@/components/Utils/regions";
-
+import { ref, set, serverTimestamp as rtdbTimestamp } from "firebase/database";
+import { gzipToBase64 } from "@/components/Utils/compression";
 // Firestore-ის დოკუმენტი მაქს. 1 MB-ია; ტრეკი ამაზე ბევრად ნაკლები უნდა იყოს
 const MAX_TRACK_CHARS = 700_000;
 const SIMPLIFY_TOLERANCES = [5, 10, 20]; // მ: თუ ტრეკი დიდია, უფრო მეტად ვამარტივებთ
@@ -116,4 +117,38 @@ export async function fetchTrail(id) {
 export async function fetchTrailTrack(id) {
   const snap = await getDoc(doc(db, "trailTracks", id));
   return snap.exists() ? decodeTrack(snap.data()) : null;
+}
+
+const MAX_ORIGINAL_CHARS = 9_000_000; // RTDB-ის ერთი მნიშვნელობის ლიმიტი 10 MB-ია
+const ORIGINAL_TIMEOUT_MS = 30_000;
+
+/**
+ * ორიგინალი ფაილი RTDB-ში: trackFiles/{id}/meta (პატარა, საჯარო) და /data (ფაილი)
+ * ბილიკი უკვე შენახულია, ამიტომ შეცდომა აქ ატვირთვას არ აჩერებს; აბრუნებს true/false
+ */
+export async function saveOriginalFile(trailId, file, user) {
+  try {
+    const data = await gzipToBase64(file);
+    if (data.length > MAX_ORIGINAL_CHARS) return false;
+
+    const write = set(ref(rtdb, `trackFiles/${trailId}`), {
+      meta: {
+        authorId: user.uid,
+        fileName: file.name.slice(0, 200),
+        size: file.size,
+        encoding: "gzip-base64",
+        createdAt: rtdbTimestamp(),
+      },
+      data,
+    });
+    // RTDB-იც კავშირის გარეშე ელოდება; 30 წმ-ის შემდეგ ვაგრძელებთ (ჩაწერა ფონზე გაგრძელდება)
+    const timeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("timeout")), ORIGINAL_TIMEOUT_MS),
+    );
+    await Promise.race([write, timeout]);
+    return true;
+  } catch (err) {
+    console.error("Original file not saved:", err);
+    return false;
+  }
 }
