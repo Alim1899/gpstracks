@@ -7,20 +7,18 @@ export const ADMIN_REGIONS = [
   { id: "mtskheta-mtianeti", municipalities: ["mtskheta", "dusheti", "tianeti", "kazbegi", "akhalgori"] },
   { id: "kakheti", municipalities: ["telavi", "akhmeta", "gurjaani", "dedoplistskaro", "lagodekhi", "sagarejo", "signagi", "kvareli"] },
   { id: "kvemo-kartli", municipalities: ["rustavi", "bolnisi", "gardabani", "dmanisi", "tetritskaro", "marneuli", "tsalka"] },
-  { id: "shida-kartli", municipalities: ["gori", "kaspi", "kareli", "khashuri", "tskhinvali", "java", "kurta", "eredvi", "tighva"] },
-  { id: "samtskhe-javakheti", municipalities: ["akhaltsikhe", "adigeni", "aspindza", "akhalkalaki", "borjomi", "ninotsminda"] },
+  { id: "shida-kartli", municipalities: ["gori", "kaspi", "kareli", "khashuri", "tskhinvali", "java", "znauri"] },  { id: "samtskhe-javakheti", municipalities: ["akhaltsikhe", "adigeni", "aspindza", "akhalkalaki", "borjomi", "ninotsminda"] },
   { id: "imereti", municipalities: ["kutaisi", "baghdati", "vani", "zestaponi", "terjola", "samtredia", "sachkhere", "tkibuli", "tskaltubo", "chiatura", "kharagauli", "khoni"] },
   { id: "racha-lechkhumi", municipalities: ["ambrolauri", "oni", "lentekhi", "tsageri"] },
   { id: "samegrelo-zemo-svaneti", municipalities: ["zugdidi", "poti", "abasha", "martvili", "mestia", "senaki", "chkhorotsku", "tsalenjikha", "khobi"] },
   { id: "guria", municipalities: ["ozurgeti", "lanchkhuti", "chokhatauri"] },
   { id: "adjara", municipalities: ["batumi", "keda", "kobuleti", "khelvachauri", "shuakhevi", "khulo"] },
-  { id: "abkhazia", municipalities: ["sokhumi", "gagra", "gudauta", "gulripshi", "ochamchire", "tkvarcheli", "gali"] },
-];
+  { id: "abkhazia", municipalities: ["sokhumi", "gagra", "gudauta", "gulripshi", "ochamchire", "gali"] },];
 
 // ოკუპირებული მუნიციპალიტეტები: რუკაზე სხვა სტილი, ბილიკზე გაფრთხილება
 export const OCCUPIED = new Set([
-  "akhalgori", "tskhinvali", "java", "kurta", "eredvi", "tighva",
-  "sokhumi", "gagra", "gudauta", "gulripshi", "ochamchire", "tkvarcheli", "gali",
+  "akhalgori", "tskhinvali", "java", "znauri",
+  "sokhumi", "gagra", "gudauta", "gulripshi", "ochamchire", "gali",
 ]);
 
 export const HISTORICAL_REGIONS = [

@@ -13,6 +13,7 @@ import { TrailForm } from "../TrailForm/TrailForm";
 import { TrackMap } from "@/components/Features/Trails/TrackMap/TrackMap";
 import { TrackStats } from "@/components/Features/Trails/TrackStats/TrackStats";
 import styles from "./UploadPage.module.css";
+import { detectMunicipalities, loadMunicipalities } from "@/components/Utils/municipalityDetect";
 
 export function UploadPage() {
   const { t } = useTranslation();
@@ -28,10 +29,11 @@ export function UploadPage() {
     setParsing(true);
     try {
       const result = await parseTrackFile(file);
-      setTrack({
+            setTrack({
         fileName: file.name,
         ...result,
         routeType: detectRouteType(result.coords, result.stats.distanceKm),
+        municipalities: await detectMunicipalitiesSafe(result.coords),
       });
     } catch (err) {
       setError(err.message?.startsWith("upload.") ? err.message : "upload.errors.unknown");
@@ -39,7 +41,15 @@ export function UploadPage() {
       setParsing(false);
     }
   }
-
+  // საზღვრების ფაილი ვერ ჩაიტვირთა → ცარიელი სია; ავტორი ხელით აირჩევს, ატვირთვა არ ჩერდება
+  async function detectMunicipalitiesSafe(coords) {
+    try {
+      return detectMunicipalities(coords, await loadMunicipalities());
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  }
   function reset() {
     setTrack(null);
     setActivity("");
@@ -98,9 +108,10 @@ export function UploadPage() {
 
           <div className={styles.formColumn}>
             {/* key: ახალ ფაილზე ფორმა თავიდან იწყება */}
-            <TrailForm
+                       <TrailForm
               key={track.fileName + track.coords.length}
               routeType={track.routeType}
+              municipalities={track.municipalities}
               onSubmit={handleSave}
               onActivityChange={setActivity}
             />

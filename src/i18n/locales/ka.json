@@ -168,14 +168,14 @@
   "mtskheta": "მცხეთა", "dusheti": "დუშეთი", "tianeti": "თიანეთი", "kazbegi": "ყაზბეგი", "akhalgori": "ახალგორი",
   "telavi": "თელავი", "akhmeta": "ახმეტა", "gurjaani": "გურჯაანი", "dedoplistskaro": "დედოფლისწყარო", "lagodekhi": "ლაგოდეხი", "sagarejo": "საგარეჯო", "signagi": "სიღნაღი", "kvareli": "ყვარელი",
   "rustavi": "რუსთავი", "bolnisi": "ბოლნისი", "gardabani": "გარდაბანი", "dmanisi": "დმანისი", "tetritskaro": "თეთრიწყარო", "marneuli": "მარნეული", "tsalka": "წალკა",
-  "gori": "გორი", "kaspi": "კასპი", "kareli": "ქარელი", "khashuri": "ხაშური", "tskhinvali": "ცხინვალი", "java": "ჯავა", "kurta": "ქურთა", "eredvi": "ერედვი", "tighva": "თიღვა",
+  "gori": "გორი", "kaspi": "კასპი", "kareli": "ქარელი", "khashuri": "ხაშური", "tskhinvali": "ცხინვალი", "java": "ჯავა",  "znauri": "ზნაური",
   "akhaltsikhe": "ახალციხე", "adigeni": "ადიგენი", "aspindza": "ასპინძა", "akhalkalaki": "ახალქალაქი", "borjomi": "ბორჯომი", "ninotsminda": "ნინოწმინდა",
   "kutaisi": "ქუთაისი", "baghdati": "ბაღდათი", "vani": "ვანი", "zestaponi": "ზესტაფონი", "terjola": "თერჯოლა", "samtredia": "სამტრედია", "sachkhere": "საჩხერე", "tkibuli": "ტყიბული", "tskaltubo": "წყალტუბო", "chiatura": "ჭიათურა", "kharagauli": "ხარაგაული", "khoni": "ხონი",
   "ambrolauri": "ამბროლაური", "oni": "ონი", "lentekhi": "ლენტეხი", "tsageri": "ცაგერი",
   "zugdidi": "ზუგდიდი", "poti": "ფოთი", "abasha": "აბაშა", "martvili": "მარტვილი", "mestia": "მესტია", "senaki": "სენაკი", "chkhorotsku": "ჩხოროწყუ", "tsalenjikha": "წალენჯიხა", "khobi": "ხობი",
   "ozurgeti": "ოზურგეთი", "lanchkhuti": "ლანჩხუთი", "chokhatauri": "ჩოხატაური",
   "batumi": "ბათუმი", "keda": "ქედა", "kobuleti": "ქობულეთი", "khelvachauri": "ხელვაჩაური", "shuakhevi": "შუახევი", "khulo": "ხულო",
-  "sokhumi": "სოხუმი", "gagra": "გაგრა", "gudauta": "გუდაუთა", "gulripshi": "გულრიფში", "ochamchire": "ოჩამჩირე", "tkvarcheli": "ტყვარჩელი", "gali": "გალი"
+  "sokhumi": "სოხუმი", "gagra": "გაგრა", "gudauta": "გუდაუთა", "gulripshi": "გულრიფში", "ochamchire": "ოჩამჩირე",  "gali": "გალი"
 },
 "historicalRegions": {
   "tusheti": "თუშეთი",
@@ -186,7 +186,7 @@
   "routeTypes": {
     "loop": "წრიული",
     "outAndBack": "წასვლა-დაბრუნება",
-    "oneWay": "ერთ მხარეს"
+    "oneWay": "ერთი მიმართულება"
   },
   "months": {
     "1": "იან",
@@ -233,6 +233,7 @@
 },
 "languages": { "ka": "ქართული", "en": "English" },
 "trailForm": {
+  "municipalitiesAutoHint": "განისაზღვრა ტრეკიდან. შეამოწმე და საჭიროების შემთხვევაში შეცვალე",
   "sectionMain": "ძირითადი ინფორმაცია",
   "sectionLocation": "მდებარეობა",
   "sectionDetails": "დამატებითი დეტალები",
