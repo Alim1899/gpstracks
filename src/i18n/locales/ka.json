@@ -224,7 +224,7 @@
   },
   "form": {
   "optional": "არასავალდებულო",
-  "searchMunicipality": "ჩაწერე მუნიციპალიტეტის სახელი",
+  "searchMunicipality": "ჩაწერე სახელი ან აირჩიე სიიდან",
   "typeMore": "ჩაწერე მინიმუმ 2 ასო",
   "noResults": "ვერაფერი მოიძებნა",
   "remove": "{{name}} — წაშლა",

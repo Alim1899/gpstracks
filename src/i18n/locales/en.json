@@ -286,7 +286,7 @@
   },
   "form": {
     "optional": "optional",
-    "searchMunicipality": "Type a municipality name",
+    "searchMunicipality": "Type a name or choose from the list",
     "typeMore": "Type at least 2 letters",
     "noResults": "Nothing found",
     "remove": "Remove {{name}}",
