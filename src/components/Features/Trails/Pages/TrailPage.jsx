@@ -68,25 +68,25 @@ export function TrailPage() {
         onDownload={() => downloadGpx({ name: title, coords })}
       />
 
-      <div className={styles.layout}>
-        <div className={styles.main}>
-          <div className={styles.mapBox}>
-            {coords ? (
-              <TrackMap
-                coords={coords}
-                stats={stats}
-                segments={showSlope ? segments : undefined}
-                hoverIndex={hoverIndex}
-                peakIndex={profile?.hasEle ? profile.peakIndex : undefined}
-                showLocate
-              />
-            ) : trackQuery.isError ? (
-              <Alert variant="error">{t("trailPage.trackError")}</Alert>
-            ) : (
-              <Loader />
-            )}
-          </div>
+           <div className={styles.layout}>
+        <div className={styles.mapBox}>
+          {coords ? (
+            <TrackMap
+              coords={coords}
+              stats={stats}
+              segments={showSlope ? segments : undefined}
+              hoverIndex={hoverIndex}
+              peakIndex={profile?.hasEle ? profile.peakIndex : undefined}
+              showLocate
+            />
+          ) : trackQuery.isError ? (
+            <Alert variant="error">{t("trailPage.trackError")}</Alert>
+          ) : (
+            <Loader />
+          )}
+        </div>
 
+        <aside className={styles.side}>
           {profile?.hasEle && (
             <ElevationProfile
               profile={profile}
@@ -97,14 +97,14 @@ export function TrailPage() {
               onHover={setHoverIndex}
             />
           )}
-        </div>
-
-        <aside className={styles.side}>
           <TrackStats stats={stats} />
           <TrailWarnings trail={trail} isOwner={user?.uid === trail.authorId} />
           <TrailDetails trail={trail} />
         </aside>
       </div>
-    </div>
+
+       
+      </div>
+   
   );
 }

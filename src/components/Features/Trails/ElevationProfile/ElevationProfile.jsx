@@ -4,7 +4,7 @@ import { Checkbox, MountainIcon } from "@/components/UI/Index";
 import { SLOPE_CLASSES, indexAtDistance, slopeAt } from "@/components/Utils/profile";
 import styles from "./ElevationProfile.module.css";
 
-const W = 760;
+const W = 560;
 const H = 220;
 const M = { top: 22, right: 16, bottom: 28, left: 52 };
 const IW = W - M.left - M.right;
