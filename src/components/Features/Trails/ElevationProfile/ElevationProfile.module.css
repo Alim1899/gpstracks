@@ -1,0 +1,62 @@
+.card {
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.title { margin: 0; font-size: 15px; }
+
+.chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: pan-y; /* მობილურზე ჰორიზონტალური მოძრაობა პროფილს ეკუთვნის, ვერტიკალური — გვერდის სქროლს */
+  cursor: crosshair;
+}
+
+.grid { stroke: #e9ecea; }
+.axis { font-size: 11px; fill: var(--color-muted); }
+
+.line {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 2.5;
+}
+.slopeLine {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.peakLabel { font-size: 11px; font-weight: 600; fill: var(--color-text); }
+
+.hover { pointer-events: none; }
+.hoverLine { stroke: var(--color-text); stroke-dasharray: 3 3; }
+.hoverDot { fill: #1a73e8; stroke: #fff; stroke-width: 2; }
+.tipBox { fill: #1c2321; opacity: 0.92; }
+.tipMain { font-size: 12px; font-weight: 600; fill: #fff; }
+.tipSub { font-size: 12px; fill: #cfd8d3; }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+.legend li { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 4px; border-radius: 2px; }

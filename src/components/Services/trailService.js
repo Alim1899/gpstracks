@@ -7,23 +7,31 @@ import {
   writeBatch,
   serverTimestamp,
   GeoPoint,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
-import { simplify, encodeTrack, getBounds } from "@/components/Utils/geometry";
-import { estimateHours, getDifficultyLevel } from "@/components/Utils/trailOptions";
+import { simplify, encodeTrack, getBounds,decodeTrack } from "@/components/Utils/geometry";
+import {
+  estimateHours,
+  getDifficultyLevel,
+} from "@/components/Utils/trailOptions";
 import { getAdminRegions, OCCUPIED } from "@/components/Utils/regions";
 
 // Firestore-ის დოკუმენტი მაქს. 1 MB-ია; ტრეკი ამაზე ბევრად ნაკლები უნდა იყოს
 const MAX_TRACK_CHARS = 700_000;
 const SIMPLIFY_TOLERANCES = [5, 10, 20]; // მ: თუ ტრეკი დიდია, უფრო მეტად ვამარტივებთ
 
-const round = (n, digits = 0) => (n == null ? null : Math.round(n * 10 ** digits) / 10 ** digits);
+const round = (n, digits = 0) =>
+  n == null ? null : Math.round(n * 10 ** digits) / 10 ** digits;
 
 function encodeForStorage(coords) {
   for (const tolerance of SIMPLIFY_TOLERANCES) {
     const simplified = simplify(coords, tolerance);
     const encoded = encodeTrack(simplified);
-    if (encoded.path.length + (encoded.elevations?.length ?? 0) <= MAX_TRACK_CHARS) {
+    if (
+      encoded.path.length + (encoded.elevations?.length ?? 0) <=
+      MAX_TRACK_CHARS
+    ) {
       return { ...encoded, pointCount: simplified.length };
     }
   }
@@ -53,7 +61,10 @@ export function buildTrailDocs(input, track, user) {
     loss: stats.loss,
     minEle: stats.minEle,
     maxEle: stats.maxEle,
-    estimatedHours: round(estimateHours(input.activity, stats.distanceKm, stats.gain), 2),
+    estimatedHours: round(
+      estimateHours(input.activity, stats.distanceKm, stats.gain),
+      2,
+    ),
     authorHours: round(stats.recorded?.totalHours, 2),
     movingHours: round(stats.recorded?.movingHours, 2),
 
@@ -88,4 +99,21 @@ export async function fetchTrails() {
   const q = query(collection(db, "trails"), where("status", "==", "published"));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+// ერთი ბილიკი. null: არ არსებობს ან სხვისი გამოუქვეყნებელია (Rules უარს ამბობს)
+export async function fetchTrail(id) {
+  try {
+    const snap = await getDoc(doc(db, "trails", id));
+    return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+  } catch (err) {
+    if (err.code === "permission-denied") return null;
+    throw err;
+  }
+}
+
+// ბილიკის ტრეკი, გაშიფრული: [lng, lat, ele?][]
+export async function fetchTrailTrack(id) {
+  const snap = await getDoc(doc(db, "trailTracks", id));
+  return snap.exists() ? decodeTrack(snap.data()) : null;
 }

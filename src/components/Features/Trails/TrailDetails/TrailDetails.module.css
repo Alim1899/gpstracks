@@ -1,0 +1,50 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.cardHeader { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.title { margin: 0; font-size: 15px; }
+
+.langBadge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-info-soft);
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.description {
+  margin: 0;
+  line-height: 1.65;
+  white-space: pre-line; /* ავტორის აბზაცები ნარჩუნდება */
+  overflow-wrap: anywhere;
+}
+
+.rows { margin: 0; display: flex; flex-direction: column; }
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 14px;
+}
+.row:last-child { border-bottom: 0; }
+.row dt { color: var(--color-muted); }
+.row dd { margin: 0; font-weight: 600; text-align: right; }
+
+.chipGroup { display: flex; flex-direction: column; gap: var(--space-2); }
+.chipLabel { margin: 0; font-size: 13px; font-weight: 500; color: var(--color-muted); }
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.chips li {
+  padding: 4px var(--space-3);
+  border-radius: 999px;
+  background: var(--color-bg);
+  font-size: 13px;
+}

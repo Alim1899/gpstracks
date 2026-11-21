@@ -73,3 +73,18 @@
 @container (min-width: 640px) {
   .langGrid { grid-template-columns: 1fr 1fr; }
 }
+/* ველების ჯგუფი: ჩვეულებრივ უხილავი ჩარჩო; გაგზავნისას ბლოკირებული და ფერმკრთალი */
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  transition: opacity 0.2s;
+}
+.formFields:disabled {
+  opacity: 0.6;
+  pointer-events: none; /* label-ებზე და ჩაკეცვაზე დაჭერაც */
+}

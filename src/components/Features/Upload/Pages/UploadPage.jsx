@@ -22,8 +22,7 @@ export function UploadPage() {
   const [error, setError] = useState(null); // თარგმანის გასაღები
   const [parsing, setParsing] = useState(false);
   const [activity, setActivity] = useState("");
-  const [saved, setSaved] = useState(false);
-
+const [savedId, setSavedId] = useState(null);
   async function handleFile(file) {
     setError(null);
     setParsing(true);
@@ -53,7 +52,7 @@ export function UploadPage() {
   function reset() {
     setTrack(null);
     setActivity("");
-    setSaved(false);
+    setSavedId(null)
   }
 
   // სავარაუდო დრო არჩეული აქტივობის მიხედვით (ლაშქრობა, სირბილი...)
@@ -65,19 +64,20 @@ export function UploadPage() {
   }, [track, activity]);
 
   async function handleSave(input) {
-    await createTrail(buildTrailDocs(input, track, user));
-    setSaved(true);
+    const id = await createTrail(buildTrailDocs(input, track, user));
+    setSavedId(id);
     window.scrollTo({ top: 0 });
   }
 
-  if (saved) {
+  if (savedId) {
     return (
       <div className={styles.success}>
         <CircleCheck size={56} strokeWidth={1.5} className={styles.successIcon} />
         <h1 className={styles.title}>{t("trailForm.successTitle")}</h1>
         <p className={styles.successText}>{t("trailForm.successText")}</p>
-        <div className={styles.successActions}>
-          <Button onClick={reset}>{t("trailForm.uploadAnother")}</Button>
+               <div className={styles.successActions}>
+          <Link to={`/trails/${savedId}`} className={styles.viewLink}>{t("trailForm.viewTrail")}</Link>
+          <Button variant="outline" onClick={reset}>{t("trailForm.uploadAnother")}</Button>
           <Link to="/" className={styles.homeLink}>{t("trailForm.backHome")}</Link>
         </div>
       </div>

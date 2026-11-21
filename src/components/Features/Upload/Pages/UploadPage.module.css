@@ -85,3 +85,16 @@
 @media (min-width: 1400px) {
   .layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }
+
+.viewLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+.viewLink:hover { background: var(--color-primary-hover); }

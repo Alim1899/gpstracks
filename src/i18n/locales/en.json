@@ -295,6 +295,8 @@
   },
   "languages": { "ka": "ქართული", "en": "English" },
   "trailForm": {
+    "slowSubmit": "Submitting is taking longer than usual. Check your internet connection. A browser ad blocker (e.g. Brave Shields) may be blocking the connection.",
+    "viewTrail": "View trail",
     "municipalitiesAutoHint": "Detected from the track. Check it and change it if needed",
     "sectionMain": "Main information",
     "sectionLocation": "Location",
@@ -332,6 +334,31 @@
       "routeTypeRequired": "Choose a route type",
       "saveFailed": "Couldn't save. Please try again",
       "permission": "You don't have permission to save. Log out and log in again"
+    }
+  },
+  "trailPage": {
+    "by": "By {{name}}",
+    "onlyIn": "Only {{language}}",
+    "inLanguage": { "ka": "in Georgian", "en": "in English" },
+    "downloadGpx": "Download GPX",
+    "share": "Share",
+    "copied": "Link copied",
+    "elevationProfile": "Elevation profile",
+    "slopeColors": "Slope colors",
+    "tooltipSlope": "Slope: {{value}}%",
+    "slope": {
+      "gentle": "< 10% (gentle)",
+      "moderate": "10–20% (moderate)",
+      "steep": "20–30% (steep)",
+      "verySteep": "> 30% (very steep)"
+    },
+    "details": "Details",
+    "loadError": "Couldn't load the trail. Please try again",
+    "trackError": "Couldn't load the track",
+    "warnings": {
+      "pending": "This trail is awaiting review. For now, only you can see it.",
+      "occupied": "This trail passes through occupied territory. Access is restricted and may be dangerous.",
+      "mountaineering": "This is a mountaineering route: experience and proper equipment are required."
     }
   }
 }

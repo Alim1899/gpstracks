@@ -19,6 +19,9 @@ const RegisterPage = lazy(() =>
     default: m.RegisterPage,
   })),
 );
+const TrailPage = lazy(() =>
+  import("@/components/Features/Trails/Pages/TrailPage").then((m) => ({ default: m.TrailPage }))
+);
 const UploadPage = lazy(() =>
   import("@/components/Features/Upload/Pages/UploadPage").then((m) => ({
     default: m.UploadPage,
@@ -36,6 +39,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
+            <Route path="trails/:id" element={<TrailPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="upload" element={<UploadPage />} />
               

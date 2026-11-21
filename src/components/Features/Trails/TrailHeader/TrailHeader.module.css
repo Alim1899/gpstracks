@@ -1,0 +1,62 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+.title { margin: 0; font-size: 26px; line-height: 1.25; }
+
+.langBadge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-info-soft);
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tags li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  font-size: 13px;
+}
+.tags .activity { border-color: var(--color-primary); color: var(--color-primary); font-weight: 600; }
+
+/* სირთულის ფერი: 1 მწვანე → 4+ წითელი */
+.difficulty { font-weight: 600; }
+.difficulty[data-level="1"] { background: #e6f4ea; border-color: #2f9e44; color: #2b8a3e; }
+.difficulty[data-level="2"] { background: #fff4e6; border-color: #f08c00; color: #d9480f; }
+.difficulty[data-level="3"] { background: #fff0f0; border-color: #e03131; color: #c92a2a; }
+.difficulty:not([data-level="1"]):not([data-level="2"]):not([data-level="3"]) {
+  background: #f8f0fc; border-color: #862e9c; color: #862e9c;
+}
+
+.bottomRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.meta { margin: 0; font-size: 14px; color: var(--color-muted); }
+
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }

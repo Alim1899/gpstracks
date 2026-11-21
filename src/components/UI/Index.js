@@ -10,3 +10,4 @@ export { Textarea } from "./Textarea/Textarea";
 export { Collapsible } from "./Collapsible/Collapsible";
 export { SegmentedControl } from "./SegmentedControl/SegmentedControl";
 export { Checkbox } from "./Checkbox/Checkbox";
+export { MountainIcon } from "./MountainIcon/MountainIcon";
