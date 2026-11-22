@@ -4,8 +4,9 @@ const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
 const ELEVATION_THRESHOLD = 3; // მ, GPS-ის ხმაურის გასაფილტრად
 const MOVING_WINDOW = 30;   // წმ: ამ ფანჯარაში ვამოწმებთ გადაადგილებას
 const MIN_SPEED = 0.1;   // მ/წმ ≈ 1.2 კმ/სთ, 3D (სიმაღლის ჩათვლით)
-const MAX_GAP = 120;      // წმ_GAP = 120;         // წმ: ამაზე დიდი წყვეტა = ჩაწერა დაპაუზებული იყო
-
+const MAX_GAP = 120;    // წმ: ამაზე დიდი წყვეტა = ჩაწერა დაპაუზებული იყო
+const MAX_WAYPOINTS = 200;
+const MAX_TEXT = 500;
 
 function distance3d(a, b) {
   const dz = a[2] != null && b[2] != null ? b[2] - a[2] : 0;
@@ -30,10 +31,18 @@ export async function parseTrackFile(file) {
  const { coords, times } = extractLineCoords(geojson);
 if (coords.length < 2) throw new Error("upload.errors.noTrack");
 
-return {
-  coords,
-  stats: { ...computeStats(coords), recorded: computeTimes(coords, times) },
-};
+  return {
+    coords,
+    stats: { ...computeStats(coords), recorded: computeTimes(coords, times) },
+    waypoints: extractWaypoints(geojson),
+    meta: {
+      format: ext,
+      creator: text(ext === "gpx" ? xml.documentElement.getAttribute("creator") : null, 100) || null,
+      pointCount: coords.length,
+      recordedAt: firstTime(times), // ms ან null
+      hasTimes: times.some(Boolean),
+    },
+  };
 }
 
 
@@ -61,6 +70,32 @@ function extractLineCoords(geojson) {
       geometry.coordinates.forEach((line, i) => add(line, t?.[i]));
   }
   return { coords, times };
+}
+// ტექსტი უსაფრთხოდ: მხოლოდ string, მოჭრილი სიგრძით
+const text = (value, max = MAX_TEXT) => (typeof value === "string" ? value.trim().slice(0, max) : "");
+
+// ავტორის მონიშნული წერტილები (წყარო, ბანაკი...); GPX: <wpt>, KML: Point Placemark
+function extractWaypoints(geojson) {
+  return geojson.features
+    .filter((f) => f.geometry?.type === "Point")
+    .slice(0, MAX_WAYPOINTS)
+    .map(({ geometry, properties: p = {} }) => {
+      const [lng, lat, ele] = geometry.coordinates;
+      return {
+        lat: Math.round(lat * 1e6) / 1e6,
+        lng: Math.round(lng * 1e6) / 1e6,
+        ele: ele != null ? Math.round(ele) : null,
+        name: text(p.name, 100),
+        desc: text(p.desc ?? p.description),
+        type: text(p.type ?? p.sym, 50),
+      };
+    });
+}
+
+// ჩაწერის დაწყების დრო
+function firstTime(times) {
+  const ms = Date.parse(times.find(Boolean) ?? "");
+  return Number.isNaN(ms) ? null : ms;
 }
 
 const EARTH_RADIUS = 6371000;

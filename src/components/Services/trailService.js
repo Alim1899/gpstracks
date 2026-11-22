@@ -8,6 +8,7 @@ import {
   serverTimestamp,
   GeoPoint,
   getDoc,
+  Timestamp,
 } from "firebase/firestore";
 import { db, rtdb} from "@/firebaseConfig";
 import { simplify, encodeTrack, getBounds,decodeTrack } from "@/components/Utils/geometry";
@@ -20,6 +21,7 @@ import { ref, set, serverTimestamp as rtdbTimestamp } from "firebase/database";
 import { gzipToBase64 } from "@/components/Utils/compression";
 // Firestore-ის დოკუმენტი მაქს. 1 MB-ია; ტრეკი ამაზე ბევრად ნაკლები უნდა იყოს
 const MAX_TRACK_CHARS = 700_000;
+const SCHEMA_VERSION = 1;
 const SIMPLIFY_TOLERANCES = [5, 10, 20]; // მ: თუ ტრეკი დიდია, უფრო მეტად ვამარტივებთ
 
 const round = (n, digits = 0) =>
@@ -46,7 +48,7 @@ function encodeForStorage(coords) {
  * input: toTrailInput()-ის შედეგი, track: parseTrackFile()-ის შედეგი
  */
 export function buildTrailDocs(input, track, user) {
-  const { coords, stats } = track;
+    const { coords, stats, meta, waypoints } = track;
   const [startLng, startLat] = coords[0];
   const [endLng, endLat] = coords.at(-1);
 
@@ -72,7 +74,25 @@ export function buildTrailDocs(input, track, user) {
     start: new GeoPoint(startLat, startLng),
     end: new GeoPoint(endLat, endLng),
     bounds: getBounds(coords),
+    // ავტორის ჩაწერის თარიღი და წყარო ფაილი
+    recordedAt: meta.recordedAt ? Timestamp.fromMillis(meta.recordedAt) : null,
+    source: {
+      fileName: track.fileName.slice(0, 200),
+      format: meta.format,
+      creator: meta.creator,
+      pointCount: meta.pointCount,
+      hasTimes: meta.hasTimes,
+    },
+    hasWaypoints: waypoints.length > 0,
 
+    // მრიცხველები: Firestore orderBy-ში ველის არმქონე დოკუმენტები არ ხვდება
+    viewCount: 0,
+    downloadCount: 0,
+    likeCount: 0,
+    ratingCount: 0,
+    ratingSum: 0,
+
+    schemaVersion: SCHEMA_VERSION,
     authorId: user.uid,
     authorName: user.displayName ?? "",
     status: "pending",
@@ -80,8 +100,7 @@ export function buildTrailDocs(input, track, user) {
     updatedAt: serverTimestamp(),
   };
 
-  const trackDoc = { authorId: user.uid, ...encodeForStorage(coords) };
-
+  const trackDoc = { authorId: user.uid, ...encodeForStorage(coords), waypoints };
   return { trail, trackDoc };
 }
 
