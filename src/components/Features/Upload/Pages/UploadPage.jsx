@@ -6,7 +6,7 @@ import { useAuth } from "@/Context/useAuth";
 import { parseTrackFile } from "@/components/Utils/trackParser";
 import { detectRouteType } from "@/components/Utils/geometry";
 import { estimateHours } from "@/components/Utils/trailOptions";
-import { buildTrailDocs, createTrail,saveOriginalFile } from "@/components/Services/trailService";
+import { buildTrailDocs, createTrail,saveOriginalFile,newTrailId } from "@/components/Services/trailService";
 import { Alert, Button } from "@/components/UI/Index";
 import { FileDropzone } from "../FileDropzone/FileDropzone";
 import { TrailForm } from "../TrailForm/TrailForm";
@@ -63,9 +63,12 @@ const [savedId, setSavedId] = useState(null);
     return { ...track.stats, durationHours: estimateHours(activity, distanceKm, gain) };
   }, [track, activity]);
 
-  async function handleSave(input) {
-    const id = await createTrail(buildTrailDocs(input, track, user));
-    await saveOriginalFile(id, track.file, user); // ვერ შეინახა → ბილიკი მაინც შენახულია
+   async function handleSave(input) {
+    const id = newTrailId();
+    // ჯერ ორიგინალი: თუ ვერ შეინახა, ბილიკი მაინც ინახება hasOriginal: false-ით
+    const hasOriginal = await saveOriginalFile(id, track.file, user);
+    const { trail, trackDoc } = buildTrailDocs(input, track, user);
+    await createTrail(id, { trail: { ...trail, hasOriginal }, trackDoc });
     setSavedId(id);
     window.scrollTo({ top: 0 });
   }

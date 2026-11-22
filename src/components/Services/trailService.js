@@ -105,13 +105,16 @@ export function buildTrailDocs(input, track, user) {
 }
 
 // ორივე დოკუმენტი ერთად (batch): ან ორივე შეინახება, ან არცერთი
-export async function createTrail({ trail, trackDoc }) {
-  const trailRef = doc(collection(db, "trails"));
+// ახალი ბილიკის ID წინასწარ (ორიგინალი ფაილი ამავე ID-ით ინახება)
+export const newTrailId = () => doc(collection(db, "trails")).id;
+
+// ორივე დოკუმენტი ერთად (batch): ან ორივე შეინახება, ან არცერთი
+export async function createTrail(id, { trail, trackDoc }) {
   const batch = writeBatch(db);
-  batch.set(trailRef, trail);
-  batch.set(doc(db, "trailTracks", trailRef.id), trackDoc);
+  batch.set(doc(db, "trails", id), trail);
+  batch.set(doc(db, "trailTracks", id), trackDoc);
   await batch.commit();
-  return trailRef.id;
+  return id;
 }
 
 // მხოლოდ გამოქვეყნებული ბილიკები (Rules სხვას არ დაუშვებს)
