@@ -28,7 +28,7 @@ function nearestIndex(map, positions, latlng) {
  * „წერტილის დამატება“: ჩართვის შემდეგ ტრეკზე დაწკაპუნება ამატებს წერტილს
  * coords: [lng, lat, ele?][], positions: [lat, lng][]
  */
-export function WaypointControl({ coords, positions, active, onToggle, onAdd }) {
+export function WaypointControl({ coords, positions, active, onToggle, onAdd, hidden = false }) {
   const map = useMap();
   const { t } = useTranslation();
   const barRef = useRef(null);
@@ -63,7 +63,7 @@ export function WaypointControl({ coords, positions, active, onToggle, onAdd }) 
         lat: round6(lat),
         lng: round6(lng),
         ele: ele != null ? Math.round(ele) : null,
-        name: "",
+        name: {},
         desc: "",
         type: "other",
       });
@@ -76,7 +76,8 @@ export function WaypointControl({ coords, positions, active, onToggle, onAdd }) 
   }
 
   return (
-    <div ref={barRef} className={styles.bar}>
+        // hidden: წერტილის popup ღიაა — ღილაკი მას არ გადაეფაროს
+    <div ref={barRef} className={`${styles.bar} ${hidden ? styles.hidden : ""}`}>
       <button type="button" className={`${styles.button} ${active ? styles.active : ""}`} onClick={toggle}>
         {active ? <X size={16} /> : <MapPinPlus size={16} />}
         {active ? t("waypoints.cancelAdd") : t("waypoints.add")}

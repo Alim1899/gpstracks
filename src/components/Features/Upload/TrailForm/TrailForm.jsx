@@ -18,6 +18,7 @@ import {
   createInitialValues,
   toTrailInput,
   validateTrail,
+  getActiveLangs,
 } from "./trailFormSchema";
 import { FormSection } from "./FormSection";
 import { LangFields } from "./LangFields";
@@ -34,6 +35,7 @@ export function TrailForm({
   municipalities,
   onSubmit,
   onActivityChange,
+  onLangsChange,
 }) {
   const { t, i18n } = useTranslation();
   const [submitError, setSubmitError] = useState(null); // თარგმანის გასაღები
@@ -53,7 +55,11 @@ export function TrailForm({
     }),
     validateTrail,
   );
-
+  // არჩეული ენები მშობელს: წერტილების სახელებიც ამ ენებზე ივსება
+  const langsKey = getActiveLangs(values).join(",");
+  useEffect(() => {
+    onLangsChange?.(langsKey.split(","));
+  }, [langsKey, onLangsChange]);
   // ჩიპების options: id-ების სია → [{ value, label }]
   const toOptions = (ids, prefix) =>
     ids.map((id) => ({ value: id, label: t(`${prefix}.${id}`) }));
@@ -94,7 +100,9 @@ export function TrailForm({
       setSubmitError(
         err.code === "permission-denied"
           ? "trailForm.errors.permission"
-          : "trailForm.errors.saveFailed",
+          : err.message?.startsWith("waypoints.")
+            ? err.message // მაგ. წერტილს სახელი ყველა ენაზე არ აქვს
+            : "trailForm.errors.saveFailed",
       );
     }
   }, scrollToFirstError);

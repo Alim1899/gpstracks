@@ -7,7 +7,10 @@ import { useWaypointEditor } from "@/hooks/useWaypointEditor";
 import { parseTrackFile } from "@/components/Utils/trackParser";
 import { detectRouteType } from "@/components/Utils/geometry";
 import { estimateHours } from "@/components/Utils/trailOptions";
-import { normalizeWaypoint } from "@/components/Utils/waypoints";
+import {
+  firstIncompleteWaypoint,
+  normalizeWaypoint,
+} from "@/components/Utils/waypoints";
 import {
   detectMunicipalities,
   loadMunicipalities,
@@ -35,7 +38,7 @@ export function UploadPage() {
   const [activity, setActivity] = useState("");
   const [savedId, setSavedId] = useState(null);
   const wp = useWaypointEditor(); // წერტილები: ფაილიდან + ავტორის დამატებული
-
+  const [langs, setLangs] = useState([]); // ფორმაში არჩეული ენები: წერტილის სახელიც ამ ენებზე
   async function handleFile(file) {
     setError(null);
     setParsing(true);
@@ -89,6 +92,12 @@ export function UploadPage() {
   }, [track, activity]);
 
   async function handleSave(input) {
+    // სახელიან წერტილს ბილიკის ყველა ენაზე უნდა ჰქონდეს სახელი: პირველ არასრულს რუკაზე ვხსნით
+    const incomplete = firstIncompleteWaypoint(wp.saved, input.langs);
+    if (incomplete >= 0) {
+      wp.select(incomplete);
+      throw new Error("waypoints.incomplete");
+    }
     const id = newTrailId();
     // ჯერ ორიგინალი: თუ ვერ შეინახა, ბილიკი მაინც ინახება hasOriginal: false-ით
     const hasOriginal = await saveOriginalFile(id, track.file, user);
@@ -145,15 +154,18 @@ export function UploadPage() {
                 {t("common.change")}
               </Button>
             </div>
+
             <TrackMap
               coords={track.coords}
               stats={stats}
               showLocate
               editor={wp}
+              waypointLangs={langs}
             />
             <TrackStats stats={stats} />
             <WaypointEditor
               waypoints={wp.waypoints}
+              langs={langs}
               selected={wp.selected}
               onSelect={wp.select}
               onDelete={wp.remove}
@@ -168,6 +180,7 @@ export function UploadPage() {
               municipalities={track.municipalities}
               onSubmit={handleSave}
               onActivityChange={setActivity}
+              onLangsChange={setLangs}
             />
           </div>
         </div>

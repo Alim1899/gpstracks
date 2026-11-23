@@ -6,16 +6,44 @@
   font-family: inherit;
 }
 
+/* სახელის ველი; რამდენიმე ენისას მარცხნივ ენის ნიშანი */
+.field {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.field:focus-within { outline: 2px solid var(--color-primary); outline-offset: -1px; }
+.invalid { border-color: var(--color-error); }
+.invalid:focus-within { outline-color: var(--color-error); }
+
+.langTag {
+  flex: none;
+  padding: 0 8px;
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.error {
+  color: var(--color-error);
+  font-size: 12px;
+}
+
 .input {
+  flex: 1;
+  min-width: 0;
   width: 100%;
   min-height: 38px;
   padding: 0 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border: 0;
+  background: none;
   font: inherit;
   font-size: 14px;
 }
-.input:focus { outline: 2px solid var(--color-primary); outline-offset: -1px; }
+.input:focus { outline: none; }
+.langTag + .input { padding-left: 0; }
 
 /* ტიპები: მხოლოდ იკონები, სახელი hover-ზე და ქვემოთ */
 .types {

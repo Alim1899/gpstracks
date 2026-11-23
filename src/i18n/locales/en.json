@@ -337,6 +337,7 @@
     }
   },
   "trailPage": {
+    "downloadNotPublished": "Download will be available once the trail is approved",
     "shareNotPublished": "Sharing will be available once the trail is approved",
     "by": "By {{name}}",
     "onlyIn": "Only {{language}}",
@@ -394,6 +395,9 @@
     "save": "Save",
     "cancel": "Cancel",
     "saveError": "Couldn't save the waypoints. Check your connection and try again.",
-    "emptyOwner": "No waypoints yet. Tap “Edit” to add a spring, camp or another spot."
+    "emptyOwner": "No waypoints yet. Tap “Edit” to add a spring, camp or another spot.",
+    "nameAllLangs": "Fill in the name in every language or leave it empty",
+"missingLangs": "Name missing: {{langs}}",
+"incomplete": "Some waypoints don't have a name in every language. Fill it in or clear the name."
   }
 }

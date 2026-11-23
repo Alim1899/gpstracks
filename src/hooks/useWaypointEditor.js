@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useReducer } from "react";
-import { MAX_WAYPOINTS } from "@/components/Utils/waypoints";
+import { MAX_WAYPOINTS, splitName } from "@/components/Utils/waypoints";
 
 // draft: ახლად დამატებული, ჯერ დაუდასტურებელი წერტილის index (ყოველთვის ბოლოა)
 const INITIAL = { waypoints: [], selected: null, draft: null, adding: false };
@@ -85,11 +85,14 @@ export function useWaypointEditor() {
   );
 
   // შესანახი სია: დაუდასტურებელი ახალი წერტილის გარეშე
+   // შესანახი სია: დაუდასტურებელი ახალი წერტილის გარეშე, სახელები ცარიელი ენების გარეშე
   const saved = useMemo(
-    () => (state.draft == null ? state.waypoints : state.waypoints.filter((_, i) => i !== state.draft)),
+    () =>
+      state.waypoints
+        .filter((_, i) => i !== state.draft)
+        .map((w) => ({ ...w, name: splitName(w.name) })),
     [state.waypoints, state.draft],
   );
-
   const isDraft = useCallback((index) => index === state.draft, [state.draft]);
 
   return { ...state, ...actions, saved, isDraft };

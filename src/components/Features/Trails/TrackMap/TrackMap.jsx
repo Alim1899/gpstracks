@@ -5,12 +5,19 @@ import "leaflet-rotate";
 // UNTOUCHABLE|||||||||||||||||||||||||||||\
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { MapContainer, Polyline, CircleMarker, Marker, Popup, Tooltip, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  Polyline,
+  CircleMarker,
+  Marker,
+  Popup,
+  Tooltip,
+  useMap,
+} from "react-leaflet";
 import L from "leaflet";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { mountainSvg } from "@/components/Utils/mountainIcon";
-import { waypointPinHtml } from "@/components/Utils/waypoints";
 import { MapLayers } from "../MapLayers/MapLayers";
 import { FullscreenControl } from "../FullscreenControl/FullScreenControl";
 import { CompassControl } from "../CompassControl/CompassControl";
@@ -19,6 +26,7 @@ import { TrackStats } from "../TrackStats/TrackStats";
 import { WaypointControl } from "../WaypointControl/WaypointControl";
 import { WaypointForm } from "../WaypointForm/WaypointForm";
 import styles from "./TrackMap.module.css";
+import { waypointName, waypointPinHtml } from "@/components/Utils/waypoints";
 
 function FitBounds({ positions }) {
   const map = useMap();
@@ -28,12 +36,22 @@ function FitBounds({ positions }) {
   return null;
 }
 
-const pointStyle = (fillColor) => ({ color: "#fff", weight: 2, fillColor, fillOpacity: 1 });
+const pointStyle = (fillColor) => ({
+  color: "#fff",
+  weight: 2,
+  fillColor,
+  fillOpacity: 1,
+});
 
 const TRACK_COLOR = "#d9480f";
 const CASING = { color: "#fff", weight: 7, opacity: 0.9 }; // თეთრი კონტური: ხაზი ნებისმიერ ფენაზე ჩანს
 
-const peakIcon = L.divIcon({ className: "", html: mountainSvg(28), iconSize: [28, 22], iconAnchor: [14, 20] });
+const peakIcon = L.divIcon({
+  className: "",
+  html: mountainSvg(28),
+  iconSize: [28, 22],
+  iconAnchor: [14, 20],
+});
 
 // წერტილის იკონები ქეშში: ტიპი + მონიშნულია თუ არა
 const waypointIcons = new Map();
@@ -43,7 +61,12 @@ function waypointIcon(type, selected) {
     const size = selected ? 36 : 28;
     waypointIcons.set(
       key,
-      L.divIcon({ className: "", html: waypointPinHtml(type, size), iconSize: [size, size], iconAnchor: [size / 2, size / 2] })
+      L.divIcon({
+        className: "",
+        html: waypointPinHtml(type, size),
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2],
+      }),
     );
   }
   return waypointIcons.get(key);
@@ -79,16 +102,26 @@ export function TrackMap({
   selectedWaypoint = null,
   onSelectWaypoint,
   editor,
+  waypointLangs = [],
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.resolvedLanguage;
   const [fullscreen, setFullscreen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(true);
   const toggleFullscreen = useCallback(() => setFullscreen((f) => !f), []);
 
-  const positions = useMemo(() => coords.map(([lng, lat]) => [lat, lng]), [coords]);
+  const positions = useMemo(
+    () => coords.map(([lng, lat]) => [lat, lng]),
+    [coords],
+  );
   const coloredLines = useMemo(
-    () => segments?.map((s) => ({ key: s.from, color: s.color, positions: positions.slice(s.from, s.to + 1) })),
-    [segments, positions]
+    () =>
+      segments?.map((s) => ({
+        key: s.from,
+        color: s.color,
+        positions: positions.slice(s.from, s.to + 1),
+      })),
+    [segments, positions],
   );
   // რედაქტირებისას სია და მონიშნული editor-იდან მოდის
   const editable = Boolean(editor);
@@ -101,55 +134,90 @@ export function TrackMap({
   const pointLng = selectedPoint?.lng;
   const focusPoint = useMemo(
     () => (pointLat != null ? [pointLat, pointLng] : null),
-    [pointLat, pointLng]
+    [pointLat, pointLng],
   );
 
   return (
     <div className={`${styles.wrapper} ${fullscreen ? styles.fullscreen : ""}`}>
-      <MapContainer className={styles.map} center={positions[0]} zoom={12} rotate rotateControl={false} touchRotate>
+      <MapContainer
+        className={styles.map}
+        center={positions[0]}
+        zoom={12}
+        rotate
+        rotateControl={false}
+        touchRotate
+      >
         <MapLayers />
 
         <Polyline positions={positions} pathOptions={CASING} />
         {coloredLines?.length ? (
           coloredLines.map((line) => (
-            <Polyline key={line.key} positions={line.positions} pathOptions={{ color: line.color, weight: 4 }} />
+            <Polyline
+              key={line.key}
+              positions={line.positions}
+              pathOptions={{ color: line.color, weight: 4 }}
+            />
           ))
         ) : (
-          <Polyline positions={positions} pathOptions={{ color: TRACK_COLOR, weight: 4 }} />
+          <Polyline
+            positions={positions}
+            pathOptions={{ color: TRACK_COLOR, weight: 4 }}
+          />
         )}
 
-        <CircleMarker center={positions[0]} radius={7} pathOptions={pointStyle("#2f6b4f")} />
-        <CircleMarker center={positions.at(-1)} radius={7} pathOptions={pointStyle("#c0392b")} />
-        {peakIndex != null && <Marker position={positions[peakIndex]} icon={peakIcon} interactive={false} />}
-        {hoverIndex != null && positions[hoverIndex] && (
-          <CircleMarker center={positions[hoverIndex]} radius={7} pathOptions={{ ...pointStyle("#1a73e8"), weight: 3 }} />
-        )}
-
-        {points?.map((w, i) => (
+        <CircleMarker
+          center={positions[0]}
+          radius={7}
+          pathOptions={pointStyle("#2f6b4f")}
+        />
+        <CircleMarker
+          center={positions.at(-1)}
+          radius={7}
+          pathOptions={pointStyle("#c0392b")}
+        />
+        {peakIndex != null && (
           <Marker
-            key={`${i}-${w.lat}-${w.lng}`}
-            position={[w.lat, w.lng]}
-            icon={waypointIcon(w.type, i === selected)}
-            zIndexOffset={i === selected ? 1000 : 0}
-            eventHandlers={{ click: () => select?.(i) }}
-          >
-            {w.name && (
-              <Tooltip direction="top" offset={[0, -16]}>
-                {w.name}
-              </Tooltip>
-            )}
-            {/* ნახვის რეჟიმში: დეტალები popup-ში */}
-            {!editable && (
-              <Popup>
-                <strong>{w.name || t(`waypoints.types.${w.type}`)}</strong>
-                <br />
-                {t(`waypoints.types.${w.type}`)}
-                {w.ele != null && ` · ${w.ele} ${t("units.m")}`}
-                {w.desc && <p className={styles.popupDesc}>{w.desc}</p>}
-              </Popup>
-            )}
-          </Marker>
-        ))}
+            position={positions[peakIndex]}
+            icon={peakIcon}
+            interactive={false}
+          />
+        )}
+        {hoverIndex != null && positions[hoverIndex] && (
+          <CircleMarker
+            center={positions[hoverIndex]}
+            radius={7}
+            pathOptions={{ ...pointStyle("#1a73e8"), weight: 3 }}
+          />
+        )}
+
+        {points?.map((w, i) => {
+          const name = waypointName(w, lang).text;
+          return (
+            <Marker
+              key={`${i}-${w.lat}-${w.lng}`}
+              position={[w.lat, w.lng]}
+              icon={waypointIcon(w.type, i === selected)}
+              zIndexOffset={i === selected ? 1000 : 0}
+              eventHandlers={{ click: () => select?.(i) }}
+            >
+              {name && (
+                <Tooltip direction="top" offset={[0, -16]}>
+                  {name}
+                </Tooltip>
+              )}
+              {/* ნახვის რეჟიმში: დეტალები popup-ში */}
+              {!editable && (
+                <Popup>
+                  <strong>{name || t(`waypoints.types.${w.type}`)}</strong>
+                  <br />
+                  {t(`waypoints.types.${w.type}`)}
+                  {w.ele != null && ` · ${w.ele} ${t("units.m")}`}
+                  {w.desc && <p className={styles.popupDesc}>{w.desc}</p>}
+                </Popup>
+              )}
+            </Marker>
+          );
+        })}
         <PanToPoint point={focusPoint} />
 
         {editable && (
@@ -160,6 +228,7 @@ export function TrackMap({
               active={editor.adding}
               onToggle={editor.toggleAdding}
               onAdd={editor.add}
+              hidden={Boolean(selectedPoint)}
             />
             {/* მონიშნული წერტილის სახელი და ტიპი — popup-ში; დახურვა დაუდასტურებელ ახალ წერტილს შლის */}
             {selectedPoint && (
@@ -172,6 +241,7 @@ export function TrackMap({
               >
                 <WaypointForm
                   waypoint={selectedPoint}
+                  langs={waypointLangs}
                   isNew={editor.isDraft(selected)}
                   onChange={(patch) => editor.update(selected, patch)}
                   onConfirm={editor.confirm}

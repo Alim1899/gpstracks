@@ -6,18 +6,19 @@ import { Alert, Button, Loader } from "@/components/UI/Index";
 import { buildProfile, slopeSegments } from "@/components/Utils/profile";
 import { localized } from "@/components/Utils/localized";
 import { downloadGpx } from "@/components/Utils/gpxExport";
+import { firstIncompleteWaypoint, waypointName } from "@/components/Utils/waypoints";
 import { NotFoundPage } from "@/components/Features/Common/Pages/NotFoundPage";
+import { WaypointEditor } from "@/components/Features/Upload/WaypointEditor/WaypointEditor";
+import { useSaveWaypoints, useTrail, useTrailTrack } from "@/hooks/useTrails";
+import { useWaypointEditor } from "@/hooks/useWaypointEditor";
 import { TrackMap } from "../TrackMap/TrackMap";
 import { TrackStats } from "../TrackStats/TrackStats";
 import { ElevationProfile } from "../ElevationProfile/ElevationProfile";
 import { TrailHeader } from "../TrailHeader/TrailHeader";
 import { TrailWarnings } from "../TrailWarnings/TrailWarnings";
 import { TrailDetails } from "../TrailDetails/TrailDetails";
-import styles from "./TrailPage.module.css";
 import { WaypointList } from "../WaypointList/WaypointList";
-import { WaypointEditor } from "@/components/Features/Upload/WaypointEditor/WaypointEditor";
-import { useSaveWaypoints, useTrail, useTrailTrack } from "@/hooks/useTrails";
-import { useWaypointEditor } from "@/hooks/useWaypointEditor";
+import styles from "./TrailPage.module.css";
 
 // ბაზის ველები → TrackStats-ის ფორმატი
 function toStats(trail) {
@@ -51,11 +52,13 @@ export function TrailPage() {
   const [editing, setEditing] = useState(false);
   const editor = useWaypointEditor();
   const saveWaypoints = useSaveWaypoints(id);
+  const [showIncomplete, setShowIncomplete] = useState(false); // „შენახვა“ არასრული სახელებით
 
   function startEditing() {
     editor.reset(waypoints ?? []);
     setSelectedWaypoint(null);
     saveWaypoints.reset();
+    setShowIncomplete(false);
     setEditing(true);
   }
 
@@ -64,19 +67,20 @@ export function TrailPage() {
     editor.reset();
   }
 
-  function save() {
+  // სახელიან წერტილს ბილიკის ყველა ენაზე უნდა ჰქონდეს სახელი (ენის დამატების შემდეგაც)
+  function save(langs) {
+    const incomplete = firstIncompleteWaypoint(editor.saved, langs);
+    if (incomplete >= 0) {
+      editor.select(incomplete);
+      setShowIncomplete(true);
+      return;
+    }
     saveWaypoints.mutate(editor.saved, { onSuccess: () => setEditing(false) });
   }
 
   // პროფილი და დახრილობის მონაკვეთები — ერთხელ, ტრეკის ჩატვირთვისას
-  const profile = useMemo(
-    () => (coords ? buildProfile(coords) : null),
-    [coords],
-  );
-  const segments = useMemo(
-    () => (profile ? slopeSegments(profile) : []),
-    [profile],
-  );
+  const profile = useMemo(() => (coords ? buildProfile(coords) : null), [coords]);
+  const segments = useMemo(() => (profile ? slopeSegments(profile) : []), [profile]);
 
   if (trailQuery.isLoading) return <Loader fullPage />;
   if (trailQuery.isError) {
@@ -90,9 +94,11 @@ export function TrailPage() {
   const trail = trailQuery.data;
   if (!trail) return <NotFoundPage />; // არ არსებობს ან სხვისი გამოუქვეყნებელია
 
-  const title = localized(trail.title, i18n.resolvedLanguage).text;
+  const lang = i18n.resolvedLanguage;
+  const title = localized(trail.title, lang).text;
   const stats = toStats(trail);
   const isOwner = user?.uid === trail.authorId;
+  const langs = trail.langs ?? [];
 
   return (
     <div className={styles.page}>
@@ -101,7 +107,14 @@ export function TrailPage() {
       <TrailHeader
         trail={trail}
         downloadDisabled={!coords}
-        onDownload={() => downloadGpx({ name: title, coords, waypoints })}
+        onDownload={() =>
+          downloadGpx({
+            name: title,
+            coords,
+            // GPX-ში სახელი ერთ ენაზე: საიტის მიმდინარე ენით
+            waypoints: waypoints?.map((w) => ({ ...w, name: waypointName(w, lang).text })),
+          })
+        }
       />
 
       <div className={styles.layout}>
@@ -118,6 +131,7 @@ export function TrailPage() {
               selectedWaypoint={selectedWaypoint}
               onSelectWaypoint={setSelectedWaypoint}
               editor={editing ? editor : undefined}
+              waypointLangs={langs}
             />
           ) : trackQuery.isError ? (
             <Alert variant="error">{t("trailPage.trackError")}</Alert>
@@ -140,27 +154,29 @@ export function TrailPage() {
           <TrackStats stats={stats} />
           <TrailWarnings trail={trail} isOwner={isOwner} />
           <TrailDetails trail={trail} />
+
           {/* სია და რედაქტორი ერთსა და იმავე ადგილზე: რედაქტირებისას სია რედაქტორით იცვლება */}
           {editing ? (
             <div className={styles.waypointEditing}>
-                           <WaypointEditor
+              <WaypointEditor
                 waypoints={editor.waypoints}
+                langs={langs}
                 selected={editor.selected}
                 onSelect={editor.select}
                 onDelete={editor.remove}
               />
               <Alert variant="error">
-                {saveWaypoints.isError && t("waypoints.saveError")}
+                {saveWaypoints.isError
+                  ? t("waypoints.saveError")
+                  : showIncomplete && firstIncompleteWaypoint(editor.saved, langs) >= 0
+                    ? t("waypoints.incomplete")
+                    : null}
               </Alert>
               <div className={styles.editActions}>
-                <Button
-                  variant="outline"
-                  onClick={cancelEditing}
-                  disabled={saveWaypoints.isPending}
-                >
+                <Button variant="outline" onClick={cancelEditing} disabled={saveWaypoints.isPending}>
                   {t("waypoints.cancel")}
                 </Button>
-                <Button onClick={save} loading={saveWaypoints.isPending}>
+                <Button onClick={() => save(langs)} loading={saveWaypoints.isPending}>
                   {t("waypoints.save")}
                 </Button>
               </div>
