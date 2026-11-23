@@ -45,17 +45,25 @@
   overflow-wrap: anywhere;
 }
 
-/* დესკტოპი: მარცხნივ რუკა (სქროლისას ადგილზე რჩება), მარჯვნივ ფორმა */
+/* დესკტოპი: მარცხნივ რუკა და წერტილები, მარჯვნივ ფორმა */
 @media (min-width: 1024px) {
   .layout {
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
     align-items: start;
   }
+
+  /* სქროლისას ადგილზე რჩება; წერტილების სიით მაღალი თუ გახდა, შიგნით ისქროლება */
   .preview {
     position: sticky;
     top: calc(var(--header-height) + var(--space-4));
+    max-height: calc(100dvh - var(--header-height) - 2 * var(--space-4));
+    overflow-y: auto;
   }
+}
+
+@media (min-width: 1400px) {
+  .layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }
 
 /* წარმატება */
@@ -78,13 +86,6 @@
   align-items: center;
   gap: var(--space-4);
 }
-.homeLink { color: var(--color-primary); font-weight: 600; text-decoration: none; }
-.homeLink:hover { text-decoration: underline; }
-
-
-@media (min-width: 1400px) {
-  .layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-}
 
 .viewLink {
   display: inline-flex;
@@ -99,9 +100,5 @@
 }
 .viewLink:hover { background: var(--color-primary-hover); }
 
-  .preview {
-    position: sticky;
-    top: calc(var(--header-height) + var(--space-4));
-    max-height: calc(100dvh - var(--header-height) - 2 * var(--space-4));
-    overflow-y: auto;
-  }
+.homeLink { color: var(--color-primary); font-weight: 600; text-decoration: none; }
+.homeLink:hover { text-decoration: underline; }

@@ -1,16 +1,17 @@
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
-import { WaypointEditor } from "../WaypointEditor/WaypointEditor";
 import { useTranslation } from "react-i18next";
-import {
-  MAX_WAYPOINTS,
-  normalizeWaypointType,
-} from "@/components/Utils/waypoints";
 import { CircleCheck } from "lucide-react";
 import { useAuth } from "@/Context/useAuth";
+import { useWaypointEditor } from "@/hooks/useWaypointEditor";
 import { parseTrackFile } from "@/components/Utils/trackParser";
 import { detectRouteType } from "@/components/Utils/geometry";
 import { estimateHours } from "@/components/Utils/trailOptions";
+import { normalizeWaypoint } from "@/components/Utils/waypoints";
+import {
+  detectMunicipalities,
+  loadMunicipalities,
+} from "@/components/Utils/municipalityDetect";
 import {
   buildTrailDocs,
   createTrail,
@@ -18,26 +19,23 @@ import {
   newTrailId,
 } from "@/components/Services/trailService";
 import { Alert, Button } from "@/components/UI/Index";
-import { FileDropzone } from "../FileDropzone/FileDropzone";
-import { TrailForm } from "../TrailForm/TrailForm";
 import { TrackMap } from "@/components/Features/Trails/TrackMap/TrackMap";
 import { TrackStats } from "@/components/Features/Trails/TrackStats/TrackStats";
+import { FileDropzone } from "../FileDropzone/FileDropzone";
+import { TrailForm } from "../TrailForm/TrailForm";
+import { WaypointEditor } from "../WaypointEditor/WaypointEditor";
 import styles from "./UploadPage.module.css";
-import {
-  detectMunicipalities,
-  loadMunicipalities,
-} from "@/components/Utils/municipalityDetect";
+
 export function UploadPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const [track, setTrack] = useState(null); // { fileName, coords, stats, routeType }
+  const [track, setTrack] = useState(null); // { file, fileName, coords, stats, waypoints, meta, routeType, municipalities }
   const [error, setError] = useState(null); // თარგმანის გასაღები
   const [parsing, setParsing] = useState(false);
   const [activity, setActivity] = useState("");
   const [savedId, setSavedId] = useState(null);
-  const [waypoints, setWaypoints] = useState([]);
-  const [selectedWaypoint, setSelectedWaypoint] = useState(null);
-  const [addingWaypoint, setAddingWaypoint] = useState(false);
+  const wp = useWaypointEditor(); // წერტილები: ფაილიდან + ავტორის დამატებული
+
   async function handleFile(file) {
     setError(null);
     setParsing(true);
@@ -50,14 +48,7 @@ export function UploadPage() {
         routeType: detectRouteType(result.coords, result.stats.distanceKm),
         municipalities: await detectMunicipalitiesSafe(result.coords),
       });
-      setWaypoints(
-        result.waypoints.map((w) => ({
-          ...w,
-          type: normalizeWaypointType(w.type),
-        })),
-      );
-      setSelectedWaypoint(null);
-      setAddingWaypoint(false);
+      wp.reset(result.waypoints.map(normalizeWaypoint));
     } catch (err) {
       setError(
         err.message?.startsWith("upload.")
@@ -68,6 +59,7 @@ export function UploadPage() {
       setParsing(false);
     }
   }
+
   // საზღვრების ფაილი ვერ ჩაიტვირთა → ცარიელი სია; ავტორი ხელით აირჩევს, ატვირთვა არ ჩერდება
   async function detectMunicipalitiesSafe(coords) {
     try {
@@ -77,36 +69,13 @@ export function UploadPage() {
       return [];
     }
   }
+
   function reset() {
     setTrack(null);
     setActivity("");
     setSavedId(null);
-    setWaypoints([]);
-    setSelectedWaypoint(null);
-    setAddingWaypoint(false);
+    wp.reset();
   }
-    // ახალი წერტილი ტრეკზე: ემატება სიის ბოლოს და მაშინვე იხსნება რედაქტირებისთვის
-  function addWaypoint(waypoint) {
-    if (waypoints.length >= MAX_WAYPOINTS) return;
-    setWaypoints([...waypoints, waypoint]);
-    setSelectedWaypoint(waypoints.length);
-    setAddingWaypoint(false);
-  }
-
-  function updateWaypoint(index, patch) {
-    setWaypoints((list) => list.map((w, i) => (i === index ? { ...w, ...patch } : w)));
-  }
-
-  function deleteWaypoint(index) {
-    setWaypoints((list) => list.filter((_, i) => i !== index));
-    setSelectedWaypoint(null);
-  }
-
-  // რუკის კონტროლის effect-ში გამოიყენება, ამიტომ სტაბილური ფუნქცია
-  const toggleAddingWaypoint = useCallback((on) => {
-    setAddingWaypoint(on);
-    if (on) setSelectedWaypoint(null);
-  }, []);
 
   // სავარაუდო დრო არჩეული აქტივობის მიხედვით (ლაშქრობა, სირბილი...)
   const stats = useMemo(() => {
@@ -123,7 +92,12 @@ export function UploadPage() {
     const id = newTrailId();
     // ჯერ ორიგინალი: თუ ვერ შეინახა, ბილიკი მაინც ინახება hasOriginal: false-ით
     const hasOriginal = await saveOriginalFile(id, track.file, user);
-    const { trail, trackDoc } = buildTrailDocs(input, { ...track, waypoints }, user);    await createTrail(id, { trail: { ...trail, hasOriginal }, trackDoc });
+    const { trail, trackDoc } = buildTrailDocs(
+      input,
+      { ...track, waypoints: wp.saved },
+      user,
+    );
+    await createTrail(id, { trail: { ...trail, hasOriginal }, trackDoc });
     setSavedId(id);
     window.scrollTo({ top: 0 });
   }
@@ -171,8 +145,19 @@ export function UploadPage() {
                 {t("common.change")}
               </Button>
             </div>
-            <TrackMap coords={track.coords} stats={stats} showLocate />
+            <TrackMap
+              coords={track.coords}
+              stats={stats}
+              showLocate
+              editor={wp}
+            />
             <TrackStats stats={stats} />
+            <WaypointEditor
+              waypoints={wp.waypoints}
+              selected={wp.selected}
+              onSelect={wp.select}
+              onDelete={wp.remove}
+            />
           </aside>
 
           <div className={styles.formColumn}>

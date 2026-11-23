@@ -1,15 +1,27 @@
 import { useTranslation } from "react-i18next";
+import { Pencil } from "lucide-react";
+import { Button } from "@/components/UI/Index";
 import { WaypointPin } from "@/components/Features/Common/WaypointPin/WaypointPin";
 import styles from "./WaypointList.module.css";
 
 // ბილიკის გვერდზე: წერტილების სია; დაჭერისას რუკაზე მოინიშნება
-export function WaypointList({ waypoints, selected, onSelect }) {
+// onEdit: მხოლოდ ავტორს — „რედაქტირება“ ღილაკი (ცარიელი სიის დროსაც ჩანს)
+export function WaypointList({ waypoints, selected, onSelect, onEdit }) {
   const { t } = useTranslation();
-  if (!waypoints.length) return null;
+  if (!waypoints.length && !onEdit) return null;
 
   return (
     <section className={styles.card}>
-      <h2 className={styles.title}>{t("waypoints.title")}</h2>
+      <header className={styles.header}>
+        <h2 className={styles.title}>{t("waypoints.title")}</h2>
+        {onEdit && (
+          <Button variant="link" onClick={onEdit}>
+            <Pencil size={16} />
+            {t("waypoints.edit")}
+          </Button>
+        )}
+      </header>
+      {!waypoints.length && <p className={styles.empty}>{t("waypoints.emptyOwner")}</p>}
       <ul className={styles.list}>
         {waypoints.map((w, i) => (
           <li key={`${i}-${w.lat}-${w.lng}`}>

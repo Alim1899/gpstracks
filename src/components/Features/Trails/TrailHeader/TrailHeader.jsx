@@ -12,6 +12,7 @@ const ACTIVITY_ICONS = { hiking: Footprints, running: Activity, mountaineering: 
 const formatDate = (date, t) => `${date.getDate()} ${t(`months.${date.getMonth() + 1}`)} ${date.getFullYear()}`;
 
 export function TrailHeader({ trail, onDownload, downloadDisabled }) {
+  const shareDisabled = trail.status !== "published";
   const { t, i18n } = useTranslation();
   const lang = i18n.resolvedLanguage;
   const title = localized(trail.title, lang);
@@ -75,9 +76,13 @@ export function TrailHeader({ trail, onDownload, downloadDisabled }) {
             <Download size={18} />
             {t("trailPage.downloadGpx")}
           </Button>
-          <Button variant="outline" onClick={share}>
+          <Button variant="outline" onClick={share}  
+            disabled={shareDisabled}
+            title={shareDisabled ? t("trailPage.shareNotPublished") : undefined}>
             {copied ? <Check size={18} /> : <Share2 size={18} />}
             {copied ? t("trailPage.copied") : t("trailPage.share")}
+             
+           
           </Button>
         </div>
       </div>

@@ -17,6 +17,7 @@ import { CompassControl } from "../CompassControl/CompassControl";
 import { LocateControl } from "../LocateControl/LocateControl";
 import { TrackStats } from "../TrackStats/TrackStats";
 import { WaypointControl } from "../WaypointControl/WaypointControl";
+import { WaypointForm } from "../WaypointForm/WaypointForm";
 import styles from "./TrackMap.module.css";
 
 function FitBounds({ positions }) {
@@ -63,10 +64,9 @@ function PanToPoint({ point }) {
  * segments: [{ from, to, color }] — დახრილობის ფერები (არასავალდებულო)
  * hoverIndex: პროფილზე მონიშნული წერტილი (არასავალდებულო)
  * peakIndex: მწვერვალის იკონი (არასავალდებულო)
- * waypoints: [{ lat, lng, ele, name, desc, type }] (არასავალდებულო)
- * selectedWaypoint, onSelectWaypoint: მონიშნული წერტილის index
- * onAddWaypoint: თუ გადაეცა, რუკაზე ჩნდება „წერტილის დამატება“ (რედაქტირების რეჟიმი)
- * addingWaypoint, onToggleAddWaypoint: დამატების რეჟიმი ჩართულია თუ არა
+ * waypoints: [{ lat, lng, ele, name, desc, type }] (არასავალდებულო, ნახვის რეჟიმი)
+ * selectedWaypoint, onSelectWaypoint: მონიშნული წერტილის index (ნახვის რეჟიმი)
+ * editor: useWaypointEditor()-ის შედეგი — თუ გადაეცა, წერტილები რედაქტირდება პირდაპირ რუკაზე
  */
 export function TrackMap({
   coords,
@@ -78,9 +78,7 @@ export function TrackMap({
   waypoints,
   selectedWaypoint = null,
   onSelectWaypoint,
-  onAddWaypoint,
-  addingWaypoint = false,
-  onToggleAddWaypoint,
+  editor,
 }) {
   const { t } = useTranslation();
   const [fullscreen, setFullscreen] = useState(false);
@@ -92,11 +90,18 @@ export function TrackMap({
     () => segments?.map((s) => ({ key: s.from, color: s.color, positions: positions.slice(s.from, s.to + 1) })),
     [segments, positions]
   );
-  const editable = Boolean(onAddWaypoint);
-  const selectedPoint = waypoints?.[selectedWaypoint];
+  // რედაქტირებისას სია და მონიშნული editor-იდან მოდის
+  const editable = Boolean(editor);
+  const points = editable ? editor.waypoints : waypoints;
+  const selected = editable ? editor.selected : selectedWaypoint;
+  const select = editable ? editor.select : onSelectWaypoint;
+  const selectedPoint = points?.[selected];
+  // მხოლოდ კოორდინატებზე დამოკიდებული: სახელის აკრეფისას popup თავიდან არ იხატება (ფოკუსი არ იკარგება)
+  const pointLat = selectedPoint?.lat;
+  const pointLng = selectedPoint?.lng;
   const focusPoint = useMemo(
-    () => (selectedPoint ? [selectedPoint.lat, selectedPoint.lng] : null),
-    [selectedPoint]
+    () => (pointLat != null ? [pointLat, pointLng] : null),
+    [pointLat, pointLng]
   );
 
   return (
@@ -120,20 +125,20 @@ export function TrackMap({
           <CircleMarker center={positions[hoverIndex]} radius={7} pathOptions={{ ...pointStyle("#1a73e8"), weight: 3 }} />
         )}
 
-        {waypoints?.map((w, i) => (
+        {points?.map((w, i) => (
           <Marker
             key={`${i}-${w.lat}-${w.lng}`}
             position={[w.lat, w.lng]}
-            icon={waypointIcon(w.type, i === selectedWaypoint)}
-            zIndexOffset={i === selectedWaypoint ? 1000 : 0}
-            eventHandlers={{ click: () => onSelectWaypoint?.(i) }}
+            icon={waypointIcon(w.type, i === selected)}
+            zIndexOffset={i === selected ? 1000 : 0}
+            eventHandlers={{ click: () => select?.(i) }}
           >
             {w.name && (
               <Tooltip direction="top" offset={[0, -16]}>
                 {w.name}
               </Tooltip>
             )}
-            {/* ნახვის რეჟიმში: დეტალები popup-ში; რედაქტირებისას ფორმა რუკის გარეთაა */}
+            {/* ნახვის რეჟიმში: დეტალები popup-ში */}
             {!editable && (
               <Popup>
                 <strong>{w.name || t(`waypoints.types.${w.type}`)}</strong>
@@ -148,13 +153,33 @@ export function TrackMap({
         <PanToPoint point={focusPoint} />
 
         {editable && (
-          <WaypointControl
-            coords={coords}
-            positions={positions}
-            active={addingWaypoint}
-            onToggle={onToggleAddWaypoint}
-            onAdd={onAddWaypoint}
-          />
+          <>
+            <WaypointControl
+              coords={coords}
+              positions={positions}
+              active={editor.adding}
+              onToggle={editor.toggleAdding}
+              onAdd={editor.add}
+            />
+            {/* მონიშნული წერტილის სახელი და ტიპი — popup-ში; დახურვა დაუდასტურებელ ახალ წერტილს შლის */}
+            {selectedPoint && (
+              <Popup
+                key={selected}
+                position={focusPoint}
+                offset={[0, -12]}
+                minWidth={248}
+                eventHandlers={{ remove: () => editor.close(selected) }}
+              >
+                <WaypointForm
+                  waypoint={selectedPoint}
+                  isNew={editor.isDraft(selected)}
+                  onChange={(patch) => editor.update(selected, patch)}
+                  onConfirm={editor.confirm}
+                  onDelete={() => editor.remove(selected)}
+                />
+              </Popup>
+            )}
+          </>
         )}
 
         <FitBounds positions={positions} />

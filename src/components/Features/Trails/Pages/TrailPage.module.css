@@ -59,3 +59,15 @@
     padding-right: 4px; /* სქროლბარი ბარათებს არ მიეკრას */
   }
 }
+/* წერტილების რედაქტირება: რედაქტორი + შენახვა/გაუქმება */
+.waypointEditing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.editActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}

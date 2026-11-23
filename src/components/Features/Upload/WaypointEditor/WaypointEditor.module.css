@@ -36,16 +36,19 @@
 }
 
 .item {
+  display: flex;
+  align-items: center;
   border: 1px solid var(--color-border);
   border-radius: 8px;
 }
 .open { border-color: var(--color-primary); }
 
 .row {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  width: 100%;
   min-height: 44px;
   padding: var(--space-2) var(--space-3);
   border: 0;
@@ -67,15 +70,16 @@
 
 .ele { color: var(--color-muted); font-size: 13px; white-space: nowrap; }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: 0 var(--space-3) var(--space-3);
+.delete {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-right: 2px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--color-muted);
+  cursor: pointer;
 }
-
-.actions {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
+.delete:hover { background: #fdecea; color: #c0392b; }

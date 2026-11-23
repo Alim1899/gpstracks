@@ -19,6 +19,7 @@ import {
 import { getAdminRegions, OCCUPIED } from "@/components/Utils/regions";
 import { ref, set, serverTimestamp as rtdbTimestamp } from "firebase/database";
 import { gzipToBase64 } from "@/components/Utils/compression";
+import { normalizeWaypoint } from "../Utils/waypoints";
 // Firestore-ის დოკუმენტი მაქს. 1 MB-ია; ტრეკი ამაზე ბევრად ნაკლები უნდა იყოს
 const MAX_TRACK_CHARS = 700_000;
 const SCHEMA_VERSION = 1;
@@ -140,7 +141,19 @@ export async function fetchTrailTrack(id) {
   const snap = await getDoc(doc(db, "trailTracks", id));
   if (!snap.exists()) return null;
   const data = snap.data();
-  return { coords: decodeTrack(data), waypoints: data.waypoints ?? [] };
+  // normalizeWaypoint: ძველ ჩანაწერებსაც სწორი ტიპი და სუფთა აღწერა ჰქონდეთ
+  return { coords: decodeTrack(data), waypoints: (data.waypoints ?? []).map(normalizeWaypoint) };
+}
+
+// ავტორი ცვლის წერტილებს არსებულ ბილიკზე (ტრეკი და დანარჩენი ველები უცვლელია)
+export async function updateTrailWaypoints(id, waypoints) {
+  const batch = writeBatch(db);
+  batch.update(doc(db, "trailTracks", id), { waypoints });
+  batch.update(doc(db, "trails", id), {
+    hasWaypoints: waypoints.length > 0,
+    updatedAt: serverTimestamp(),
+  });
+  await batch.commit();
 }
 
 const MAX_ORIGINAL_CHARS = 9_000_000; // RTDB-ის ერთი მნიშვნელობის ლიმიტი 10 MB-ია

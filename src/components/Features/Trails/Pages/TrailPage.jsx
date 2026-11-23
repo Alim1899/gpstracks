@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/Context/useAuth";
-import { Alert, Loader } from "@/components/UI/Index";
+import { Alert, Button, Loader } from "@/components/UI/Index";
 import { buildProfile, slopeSegments } from "@/components/Utils/profile";
 import { localized } from "@/components/Utils/localized";
 import { downloadGpx } from "@/components/Utils/gpxExport";
@@ -15,7 +15,9 @@ import { TrailWarnings } from "../TrailWarnings/TrailWarnings";
 import { TrailDetails } from "../TrailDetails/TrailDetails";
 import styles from "./TrailPage.module.css";
 import { WaypointList } from "../WaypointList/WaypointList";
-import { useTrail, useTrailTrack } from "@/hooks/useTrails";
+import { WaypointEditor } from "@/components/Features/Upload/WaypointEditor/WaypointEditor";
+import { useSaveWaypoints, useTrail, useTrailTrack } from "@/hooks/useTrails";
+import { useWaypointEditor } from "@/hooks/useWaypointEditor";
 
 // ბაზის ველები → TrackStats-ის ფორმატი
 function toStats(trail) {
@@ -45,6 +47,27 @@ export function TrailPage() {
   const [hoverIndex, setHoverIndex] = useState(null);
   const [selectedWaypoint, setSelectedWaypoint] = useState(null);
 
+  // წერტილების რედაქტირება (მხოლოდ ავტორი): ასლზე ვმუშაობთ, ბაზაში „შენახვისას“ იწერება
+  const [editing, setEditing] = useState(false);
+  const editor = useWaypointEditor();
+  const saveWaypoints = useSaveWaypoints(id);
+
+  function startEditing() {
+    editor.reset(waypoints ?? []);
+    setSelectedWaypoint(null);
+    saveWaypoints.reset();
+    setEditing(true);
+  }
+
+  function cancelEditing() {
+    setEditing(false);
+    editor.reset();
+  }
+
+  function save() {
+    saveWaypoints.mutate(editor.saved, { onSuccess: () => setEditing(false) });
+  }
+
   // პროფილი და დახრილობის მონაკვეთები — ერთხელ, ტრეკის ჩატვირთვისას
   const profile = useMemo(
     () => (coords ? buildProfile(coords) : null),
@@ -69,6 +92,7 @@ export function TrailPage() {
 
   const title = localized(trail.title, i18n.resolvedLanguage).text;
   const stats = toStats(trail);
+  const isOwner = user?.uid === trail.authorId;
 
   return (
     <div className={styles.page}>
@@ -93,6 +117,7 @@ export function TrailPage() {
               waypoints={waypoints}
               selectedWaypoint={selectedWaypoint}
               onSelectWaypoint={setSelectedWaypoint}
+              editor={editing ? editor : undefined}
             />
           ) : trackQuery.isError ? (
             <Alert variant="error">{t("trailPage.trackError")}</Alert>
@@ -113,14 +138,42 @@ export function TrailPage() {
             />
           )}
           <TrackStats stats={stats} />
-          <TrailWarnings trail={trail} isOwner={user?.uid === trail.authorId} />
+          <TrailWarnings trail={trail} isOwner={isOwner} />
           <TrailDetails trail={trail} />
-          {waypoints && (
-            <WaypointList
-              waypoints={waypoints}
-              selected={selectedWaypoint}
-              onSelect={setSelectedWaypoint}
-            />
+          {/* სია და რედაქტორი ერთსა და იმავე ადგილზე: რედაქტირებისას სია რედაქტორით იცვლება */}
+          {editing ? (
+            <div className={styles.waypointEditing}>
+                           <WaypointEditor
+                waypoints={editor.waypoints}
+                selected={editor.selected}
+                onSelect={editor.select}
+                onDelete={editor.remove}
+              />
+              <Alert variant="error">
+                {saveWaypoints.isError && t("waypoints.saveError")}
+              </Alert>
+              <div className={styles.editActions}>
+                <Button
+                  variant="outline"
+                  onClick={cancelEditing}
+                  disabled={saveWaypoints.isPending}
+                >
+                  {t("waypoints.cancel")}
+                </Button>
+                <Button onClick={save} loading={saveWaypoints.isPending}>
+                  {t("waypoints.save")}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            waypoints && (
+              <WaypointList
+                waypoints={waypoints}
+                selected={selectedWaypoint}
+                onSelect={setSelectedWaypoint}
+                onEdit={isOwner ? startEditing : undefined}
+              />
+            )
           )}
         </aside>
       </div>

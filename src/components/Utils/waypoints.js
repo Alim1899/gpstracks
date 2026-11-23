@@ -67,10 +67,47 @@ const SYMBOLS = {
   "photo spot": "photo",
 };
 
-export function normalizeWaypointType(raw) {
+// სახელიდან ტიპის გამოცნობა, როცა ფაილში ტიპი არ წერია (მაგ. Wikiloc: "წყალი | Water")
+// თანმიმდევრობა მნიშვნელოვანია: ჯერ ჩანჩქერი, მერე წყარო
+const NAME_HINTS = [
+  ["waterfall", /waterfall|ჩანჩქერ/],
+  ["spring", /spring|water|fountain|წყარო|წყალ/],
+  ["camp", /camp|tent|ბანაკ|კარავ/],
+  ["shelter", /hut|shelter|cottage|lodge|refuge|ქოხ|კოტეჯ|თავშესაფ/],
+  ["pass", /\bpass\b|saddle|უღელტეხ/],
+  ["peak", /summit|peak|მწვერვალ/],
+  ["viewpoint", /viewpoint|view point|ხედ/],
+  ["lake", /lake|ტბა|ტბის/],
+  ["parking", /parking|პარკინგ|ავტოსადგომ/],
+  ["junction", /junction|fork|გასაყარ/],
+  ["danger", /danger|საშიშ/],
+];
+
+function guessFromName(name) {
+  const text = typeof name === "string" ? name.toLowerCase() : "";
+  return NAME_HINTS.find(([, pattern]) => pattern.test(text))?.[0] ?? "other";
+}
+
+// ჩვენი id → უცვლელი; ცნობილი სიმბოლო → შესაბამისი ტიპი; სხვა შემთხვევაში სახელით
+export function normalizeWaypointType(raw, name) {
   const key = typeof raw === "string" ? raw.toLowerCase().trim() : "";
   if (BY_ID[key]) return key;
-  return SYMBOLS[key] ?? "other";
+  return SYMBOLS[key] ?? guessFromName(name);
+}
+
+const ID_ONLY = /^[\s\-–—|:#]*[0-9a-f]{6,}\s*$/i;
+const cleanDesc = (desc) => (typeof desc === "string" && !ID_ONLY.test(desc) ? desc.trim() : "");
+
+// ფაილიდან ან ბაზიდან მოსული წერტილი → ერთიანი, სუფთა ფორმატი
+export function normalizeWaypoint(w) {
+  return {
+    lat: w.lat,
+    lng: w.lng,
+    ele: w.ele ?? null,
+    name: typeof w.name === "string" ? w.name.trim() : "",
+    desc: cleanDesc(w.desc),
+    type: normalizeWaypointType(w.type, w.name),
+  };
 }
 
 // ფერადი წრე თეთრი იკონით (HTML): რუკის მარკერიც და სიაც ერთნაირად გამოიყურება

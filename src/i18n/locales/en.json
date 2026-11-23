@@ -337,6 +337,7 @@
     }
   },
   "trailPage": {
+    "shareNotPublished": "Sharing will be available once the trail is approved",
     "by": "By {{name}}",
     "onlyIn": "Only {{language}}",
     "inLanguage": { "ka": "in Georgian", "en": "in English" },
@@ -362,32 +363,37 @@
     }
   },
   "waypoints": {
-  "title": "Waypoints",
-  "add": "Add waypoint",
-  "cancelAdd": "Cancel",
-  "pickHint": "Click on the track where the waypoint should go",
-  "tooFar": "Click closer to the track",
-  "empty": "No waypoints yet. Add a spring, camp, viewpoint or another important spot: tap “Add waypoint” on the map, then click on the track.",
-  "name": "Name",
-  "namePlaceholder": "e.g. Spring at the forest edge",
-  "type": "Type",
-  "desc": "Description",
-  "delete": "Delete",
-  "done": "Done",
-  "types": {
-    "spring": "Spring",
-    "camp": "Camp",
-    "shelter": "Shelter",
-    "peak": "Peak",
-    "pass": "Pass",
-    "viewpoint": "Viewpoint",
-    "lake": "Lake",
-    "waterfall": "Waterfall",
-    "parking": "Parking",
-    "junction": "Junction",
-    "danger": "Danger",
-    "photo": "Photo",
-    "other": "Other"
+    "title": "Waypoints",
+    "add": "Add waypoint",
+    "cancelAdd": "Cancel",
+    "pickHint": "Click on the track where the waypoint should go",
+    "tooFar": "Click closer to the track",
+    "empty": "No waypoints yet. Tap “Add waypoint” on the map, then click on the track: a spring, camp, viewpoint...",
+    "name": "Name",
+    "namePlaceholder": "e.g. Spring at the forest edge",
+    "type": "Type",
+    "desc": "Description",
+    "delete": "Delete",
+    "done": "Done",
+    "types": {
+      "spring": "Spring",
+      "camp": "Camp",
+      "shelter": "Shelter",
+      "peak": "Peak",
+      "pass": "Pass",
+      "viewpoint": "Viewpoint",
+      "lake": "Lake",
+      "waterfall": "Waterfall",
+      "parking": "Parking",
+      "junction": "Junction",
+      "danger": "Danger",
+      "photo": "Photo",
+      "other": "Other"
+    },
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saveError": "Couldn't save the waypoints. Check your connection and try again.",
+    "emptyOwner": "No waypoints yet. Tap “Edit” to add a spring, camp or another spot."
   }
-}
 }
