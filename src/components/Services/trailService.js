@@ -138,7 +138,9 @@ export async function fetchTrail(id) {
 // ბილიკის ტრეკი, გაშიფრული: [lng, lat, ele?][]
 export async function fetchTrailTrack(id) {
   const snap = await getDoc(doc(db, "trailTracks", id));
-  return snap.exists() ? decodeTrack(snap.data()) : null;
+  if (!snap.exists()) return null;
+  const data = snap.data();
+  return { coords: decodeTrack(data), waypoints: data.waypoints ?? [] };
 }
 
 const MAX_ORIGINAL_CHARS = 9_000_000; // RTDB-ის ერთი მნიშვნელობის ლიმიტი 10 MB-ია
@@ -174,3 +176,4 @@ export async function saveOriginalFile(trailId, file, user) {
     return false;
   }
 }
+

@@ -1,0 +1,56 @@
+/* ზედა ცენტრში: ფენების ღილაკს (მარჯვნივ) და zoom-ს (მარცხნივ) არ ეფარება */
+.bar {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  z-index: 1000;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 180px);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 0.3);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.button:hover { background: #f4f4f4; }
+.active { background: var(--color-primary); color: #fff; }
+.active:hover { background: var(--color-primary-hover); }
+
+.hint {
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgb(28 35 33 / 0.85);
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+}
+.missed { background: rgb(192 57 43 / 0.92); }
+
+/* არჩევის რეჟიმში მთელ რუკაზე (ხაზის ჩათვლით) crosshair */
+.picking,
+.picking :global(.leaflet-interactive) {
+  cursor: crosshair !important;
+}
+
+@media (max-width: 480px) {
+  .bar { max-width: calc(100% - 110px); }
+  .button { font-size: 13px; padding: 0 10px; }
+}

@@ -1,19 +1,32 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { Link } from "react-router";
+import { WaypointEditor } from "../WaypointEditor/WaypointEditor";
 import { useTranslation } from "react-i18next";
+import {
+  MAX_WAYPOINTS,
+  normalizeWaypointType,
+} from "@/components/Utils/waypoints";
 import { CircleCheck } from "lucide-react";
 import { useAuth } from "@/Context/useAuth";
 import { parseTrackFile } from "@/components/Utils/trackParser";
 import { detectRouteType } from "@/components/Utils/geometry";
 import { estimateHours } from "@/components/Utils/trailOptions";
-import { buildTrailDocs, createTrail,saveOriginalFile,newTrailId } from "@/components/Services/trailService";
+import {
+  buildTrailDocs,
+  createTrail,
+  saveOriginalFile,
+  newTrailId,
+} from "@/components/Services/trailService";
 import { Alert, Button } from "@/components/UI/Index";
 import { FileDropzone } from "../FileDropzone/FileDropzone";
 import { TrailForm } from "../TrailForm/TrailForm";
 import { TrackMap } from "@/components/Features/Trails/TrackMap/TrackMap";
 import { TrackStats } from "@/components/Features/Trails/TrackStats/TrackStats";
 import styles from "./UploadPage.module.css";
-import { detectMunicipalities, loadMunicipalities } from "@/components/Utils/municipalityDetect";
+import {
+  detectMunicipalities,
+  loadMunicipalities,
+} from "@/components/Utils/municipalityDetect";
 export function UploadPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -21,21 +34,36 @@ export function UploadPage() {
   const [error, setError] = useState(null); // თარგმანის გასაღები
   const [parsing, setParsing] = useState(false);
   const [activity, setActivity] = useState("");
-const [savedId, setSavedId] = useState(null);
+  const [savedId, setSavedId] = useState(null);
+  const [waypoints, setWaypoints] = useState([]);
+  const [selectedWaypoint, setSelectedWaypoint] = useState(null);
+  const [addingWaypoint, setAddingWaypoint] = useState(false);
   async function handleFile(file) {
     setError(null);
     setParsing(true);
     try {
       const result = await parseTrackFile(file);
-            setTrack({
-              file,
+      setTrack({
+        file,
         fileName: file.name,
         ...result,
         routeType: detectRouteType(result.coords, result.stats.distanceKm),
         municipalities: await detectMunicipalitiesSafe(result.coords),
       });
+      setWaypoints(
+        result.waypoints.map((w) => ({
+          ...w,
+          type: normalizeWaypointType(w.type),
+        })),
+      );
+      setSelectedWaypoint(null);
+      setAddingWaypoint(false);
     } catch (err) {
-      setError(err.message?.startsWith("upload.") ? err.message : "upload.errors.unknown");
+      setError(
+        err.message?.startsWith("upload.")
+          ? err.message
+          : "upload.errors.unknown",
+      );
     } finally {
       setParsing(false);
     }
@@ -52,23 +80,50 @@ const [savedId, setSavedId] = useState(null);
   function reset() {
     setTrack(null);
     setActivity("");
-    setSavedId(null)
+    setSavedId(null);
+    setWaypoints([]);
+    setSelectedWaypoint(null);
+    setAddingWaypoint(false);
   }
+    // ახალი წერტილი ტრეკზე: ემატება სიის ბოლოს და მაშინვე იხსნება რედაქტირებისთვის
+  function addWaypoint(waypoint) {
+    if (waypoints.length >= MAX_WAYPOINTS) return;
+    setWaypoints([...waypoints, waypoint]);
+    setSelectedWaypoint(waypoints.length);
+    setAddingWaypoint(false);
+  }
+
+  function updateWaypoint(index, patch) {
+    setWaypoints((list) => list.map((w, i) => (i === index ? { ...w, ...patch } : w)));
+  }
+
+  function deleteWaypoint(index) {
+    setWaypoints((list) => list.filter((_, i) => i !== index));
+    setSelectedWaypoint(null);
+  }
+
+  // რუკის კონტროლის effect-ში გამოიყენება, ამიტომ სტაბილური ფუნქცია
+  const toggleAddingWaypoint = useCallback((on) => {
+    setAddingWaypoint(on);
+    if (on) setSelectedWaypoint(null);
+  }, []);
 
   // სავარაუდო დრო არჩეული აქტივობის მიხედვით (ლაშქრობა, სირბილი...)
   const stats = useMemo(() => {
     if (!track) return null;
     if (!activity) return track.stats;
     const { distanceKm, gain } = track.stats;
-    return { ...track.stats, durationHours: estimateHours(activity, distanceKm, gain) };
+    return {
+      ...track.stats,
+      durationHours: estimateHours(activity, distanceKm, gain),
+    };
   }, [track, activity]);
 
-   async function handleSave(input) {
+  async function handleSave(input) {
     const id = newTrailId();
     // ჯერ ორიგინალი: თუ ვერ შეინახა, ბილიკი მაინც ინახება hasOriginal: false-ით
     const hasOriginal = await saveOriginalFile(id, track.file, user);
-    const { trail, trackDoc } = buildTrailDocs(input, track, user);
-    await createTrail(id, { trail: { ...trail, hasOriginal }, trackDoc });
+    const { trail, trackDoc } = buildTrailDocs(input, { ...track, waypoints }, user);    await createTrail(id, { trail: { ...trail, hasOriginal }, trackDoc });
     setSavedId(id);
     window.scrollTo({ top: 0 });
   }
@@ -76,13 +131,23 @@ const [savedId, setSavedId] = useState(null);
   if (savedId) {
     return (
       <div className={styles.success}>
-        <CircleCheck size={56} strokeWidth={1.5} className={styles.successIcon} />
+        <CircleCheck
+          size={56}
+          strokeWidth={1.5}
+          className={styles.successIcon}
+        />
         <h1 className={styles.title}>{t("trailForm.successTitle")}</h1>
         <p className={styles.successText}>{t("trailForm.successText")}</p>
-               <div className={styles.successActions}>
-          <Link to={`/trails/${savedId}`} className={styles.viewLink}>{t("trailForm.viewTrail")}</Link>
-          <Button variant="outline" onClick={reset}>{t("trailForm.uploadAnother")}</Button>
-          <Link to="/" className={styles.homeLink}>{t("trailForm.backHome")}</Link>
+        <div className={styles.successActions}>
+          <Link to={`/trails/${savedId}`} className={styles.viewLink}>
+            {t("trailForm.viewTrail")}
+          </Link>
+          <Button variant="outline" onClick={reset}>
+            {t("trailForm.uploadAnother")}
+          </Button>
+          <Link to="/" className={styles.homeLink}>
+            {t("trailForm.backHome")}
+          </Link>
         </div>
       </div>
     );
@@ -112,7 +177,7 @@ const [savedId, setSavedId] = useState(null);
 
           <div className={styles.formColumn}>
             {/* key: ახალ ფაილზე ფორმა თავიდან იწყება */}
-                       <TrailForm
+            <TrailForm
               key={track.fileName + track.coords.length}
               routeType={track.routeType}
               municipalities={track.municipalities}

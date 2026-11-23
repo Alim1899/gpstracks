@@ -14,6 +14,7 @@ import { TrailHeader } from "../TrailHeader/TrailHeader";
 import { TrailWarnings } from "../TrailWarnings/TrailWarnings";
 import { TrailDetails } from "../TrailDetails/TrailDetails";
 import styles from "./TrailPage.module.css";
+import { WaypointList } from "../WaypointList/WaypointList";
 import { useTrail, useTrailTrack } from "@/hooks/useTrails";
 
 // ბაზის ველები → TrackStats-ის ფორმატი
@@ -24,7 +25,10 @@ function toStats(trail) {
     loss: trail.loss,
     maxEle: trail.maxEle,
     durationHours: trail.estimatedHours,
-    recorded: trail.authorHours != null ? { totalHours: trail.authorHours, movingHours: trail.movingHours } : null,
+    recorded:
+      trail.authorHours != null
+        ? { totalHours: trail.authorHours, movingHours: trail.movingHours }
+        : null,
   };
 }
 
@@ -34,14 +38,22 @@ export function TrailPage() {
   const { user } = useAuth();
   const trailQuery = useTrail(id);
   const trackQuery = useTrailTrack(id);
-  const coords = trackQuery.data;
+  const coords = trackQuery.data?.coords;
+  const waypoints = trackQuery.data?.waypoints;
 
   const [showSlope, setShowSlope] = useState(true);
   const [hoverIndex, setHoverIndex] = useState(null);
+  const [selectedWaypoint, setSelectedWaypoint] = useState(null);
 
   // პროფილი და დახრილობის მონაკვეთები — ერთხელ, ტრეკის ჩატვირთვისას
-  const profile = useMemo(() => (coords ? buildProfile(coords) : null), [coords]);
-  const segments = useMemo(() => (profile ? slopeSegments(profile) : []), [profile]);
+  const profile = useMemo(
+    () => (coords ? buildProfile(coords) : null),
+    [coords],
+  );
+  const segments = useMemo(
+    () => (profile ? slopeSegments(profile) : []),
+    [profile],
+  );
 
   if (trailQuery.isLoading) return <Loader fullPage />;
   if (trailQuery.isError) {
@@ -65,10 +77,10 @@ export function TrailPage() {
       <TrailHeader
         trail={trail}
         downloadDisabled={!coords}
-        onDownload={() => downloadGpx({ name: title, coords })}
+        onDownload={() => downloadGpx({ name: title, coords, waypoints })}
       />
 
-           <div className={styles.layout}>
+      <div className={styles.layout}>
         <div className={styles.mapBox}>
           {coords ? (
             <TrackMap
@@ -78,6 +90,9 @@ export function TrailPage() {
               hoverIndex={hoverIndex}
               peakIndex={profile?.hasEle ? profile.peakIndex : undefined}
               showLocate
+              waypoints={waypoints}
+              selectedWaypoint={selectedWaypoint}
+              onSelectWaypoint={setSelectedWaypoint}
             />
           ) : trackQuery.isError ? (
             <Alert variant="error">{t("trailPage.trackError")}</Alert>
@@ -100,11 +115,15 @@ export function TrailPage() {
           <TrackStats stats={stats} />
           <TrailWarnings trail={trail} isOwner={user?.uid === trail.authorId} />
           <TrailDetails trail={trail} />
+          {waypoints && (
+            <WaypointList
+              waypoints={waypoints}
+              selected={selectedWaypoint}
+              onSelect={setSelectedWaypoint}
+            />
+          )}
         </aside>
       </div>
-
-       
-      </div>
-   
+    </div>
   );
 }
