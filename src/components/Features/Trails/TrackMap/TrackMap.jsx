@@ -27,7 +27,7 @@ import { WaypointControl } from "../WaypointControl/WaypointControl";
 import { WaypointForm } from "../WaypointForm/WaypointForm";
 import styles from "./TrackMap.module.css";
 import { waypointName, waypointPinHtml } from "@/components/Utils/waypoints";
-
+import { MunicipalityLayer } from "../MunicipalityLayer/MunicipalityLayer";
 function FitBounds({ positions }) {
   const map = useMap();
   useEffect(() => {
@@ -148,6 +148,7 @@ export function TrackMap({
         touchRotate
       >
         <MapLayers />
+        <MunicipalityLayer/>
 
         <Polyline positions={positions} pathOptions={CASING} />
         {coloredLines?.length ? (

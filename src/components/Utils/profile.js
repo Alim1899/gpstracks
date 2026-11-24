@@ -81,3 +81,27 @@ export function indexAtDistance(profile, km) {
   if (lo > 0 && km - dist[lo - 1] < dist[lo] - km) lo--;
   return lo;
 }
+
+const MAX_WAYPOINT_OFFSET_M = 300; // ტრეკიდან უფრო შორს მდებარე წერტილი პროფილზე არ ჩანს
+
+/**
+ * წერტილები პროფილზე: თითოეულისთვის ტრეკის უახლოესი წერტილის index (მანძილი და სიმაღლე იქიდან)
+ * შედეგი: [{ waypoint, waypointIndex, index }], დალაგებული ტრეკის გასწვრივ
+ */
+export function waypointsOnTrack(coords, waypoints = []) {
+  return waypoints
+    .map((waypoint, waypointIndex) => {
+      let index = 0;
+      let best = Infinity;
+      for (let i = 0; i < coords.length; i++) {
+        const d = distanceMeters(coords[i], [waypoint.lng, waypoint.lat]);
+        if (d < best) {
+          best = d;
+          index = i;
+        }
+      }
+      return best <= MAX_WAYPOINT_OFFSET_M ? { waypoint, waypointIndex, index } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.index - b.index);
+}

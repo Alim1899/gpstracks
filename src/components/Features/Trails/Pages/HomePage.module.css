@@ -25,6 +25,30 @@
 
 .mapPanel { min-height: 0; background: #dfe7e2; }
 
+.count {
+  margin: 0 0 var(--space-3);
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0 0 var(--space-8);
+  list-style: none;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin: var(--space-6) 0;
+  color: var(--color-muted);
+}
+.empty p { margin: 0; }
 .viewToggle { display: none; }
 
 /* მობილური: ერთი ხედი და გადამრთველი */

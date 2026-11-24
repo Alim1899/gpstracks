@@ -103,3 +103,10 @@
   padding: 0;
   list-style: none;
 }
+/* inline: ფილტრის პანელში სია ველის ქვეშ, ყოველთვის ხილული, საკუთარი სქროლით */
+.inline .list {
+  position: static;
+  max-height: 220px;
+  margin-top: var(--space-1);
+  box-shadow: none;
+}

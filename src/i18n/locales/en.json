@@ -69,13 +69,26 @@
     "weakPassword": "Password is too weak",
     "unknown": "Something went wrong. Please try again"
   },
-  "home": {
-    "filters": "Filters (next step)",
-    "list": "Trail list",
-    "map": "Map",
-    "showMap": "Show map",
-    "showList": "Show list"
-  },
+ "home": {
+  "filters": "Filters",
+  "list": "Trail list",
+  "map": "Map",
+  "showMap": "Show map",
+  "showList": "Show list",
+  "results_one": "{{count}} trail",
+  "results_other": "{{count}} trails",
+  "sortLabel": "Sort",
+  "sort": { "newest": "Newest", "shortest": "Shortest", "longest": "Longest", "easiest": "Easiest" },
+  "distance": { "short": "Under 5 km", "medium": "5–10 km", "long": "10–20 km", "veryLong": "Over 20 km" },
+  "chooseActivity": "Choose a category above to filter by difficulty",
+  "inSeason": "Good right now ({{month}})",
+  "reset": "Clear",
+  "apply": "Show",
+  "empty": "No published trails yet.",
+  "noResults": "No trails match these filters.",
+  "loadError": "Couldn't load trails. Try refreshing the page.",
+  "viewTrail": "View trail"
+},
   "upload": {
     "title": "Upload a track",
     "drop": "Drop a GPX or KML file",

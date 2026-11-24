@@ -14,7 +14,7 @@ const MAX_RESULTS = 8;
  * აკრეფისას: ძებნა ყველა ენაზე ერთდროულად ("ქა" და "ka" ორივე ქარელს პოულობს).
  * value: ["sachkhere", ...]   onChange: იღებს ახალ მასივს
  */
-export function MunicipalitySelect({ label, value = [], onChange, onBlur, name, error, hint }) {
+export function MunicipalitySelect({ label, value = [], onChange, onBlur, name, error, hint, inline = false  }) {
   const { t, i18n } = useTranslation();
   const id = useId();
   const listId = `${id}-list`;
@@ -22,7 +22,8 @@ export function MunicipalitySelect({ label, value = [], onChange, onBlur, name, 
   const optionId = (municipalityId) => `${id}-${municipalityId}`;
 
   const [query, setQuery] = useState("");
-  const [open, setOpen] = useState(false);
+const [isOpen, setOpen] = useState(false);
+  const open = inline || isOpen;
   const [activeIndex, setActiveIndex] = useState(0);
 
   const browsing = query.trim().length === 0;
@@ -115,7 +116,7 @@ export function MunicipalitySelect({ label, value = [], onChange, onBlur, name, 
   let flatIndex = 0; // დაჯგუფებულ სიაში თითოეული ელემენტის ინდექსი ბრტყელ სიაში
 
   return (
-    <div className={inputStyles.field}>
+        <div className={`${inputStyles.field} ${inline ? styles.inline : ""}`}>
       {label && <label htmlFor={id} className={inputStyles.label}>{label}</label>}
 
       {value.length > 0 && (

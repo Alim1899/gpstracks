@@ -188,8 +188,7 @@ export function computeTimes(coords, times) {
   }
   addIfMoving(start, coords.length - 1); // ბოლო მონაკვეთი
 
-  return {
-    totalHours: (t.at(-1) - t[0]) / 3_600_000,
-    movingHours: moving / 3600,
-  };
+  const totalHours = (t.at(-1) - t[0]) / 3_600_000;
+  if (totalHours <= 0) return null; // დრო უკუღმაა ან ერთნაირი (ზოგი აპლიკაციის ექსპორტი) — უცნობად ვთვლით
+  return { totalHours, movingHours: moving / 3600 };
 }

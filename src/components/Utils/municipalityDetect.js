@@ -1,19 +1,15 @@
 // ტრეკიდან მუნიციპალიტეტების ავტომატური განსაზღვრა (point-in-polygon).
 // საზღვრები: public/data/municipalities.geojson, properties.id = regions.js-ის id
+import { fetchJson, MUNICIPALITIES_URL } from "./mapData";
 
-const DATA_URL = "/data/municipalities.geojson";
 const SAMPLE_STEP_M = 150; // ტრეკზე ყოველ ~150 მ-ში ერთი შესამოწმებელი წერტილი
 const MIN_SHARE = 0.03;    // მუნიციპალიტეტი ითვლება, თუ ტრეკის ≥3% მასშია (საზღვრის "ცახცახის" გამოსარიცხად)
 
-let cache = null; // ფაილი ერთხელ იტვირთება და მეხსიერებაში რჩება
+let cache = null; // მომზადებული პოლიგონები ერთხელ
 
-// ფაილის ჩატვირთვა + თითო პოლიგონისთვის bbox (სწრაფი წინასწარი შემოწმებისთვის)
+// ფაილის ჩატვირთვა (იგივე ფაილს მთავარი გვერდის რუკაც იყენებს) + თითო პოლიგონისთვის bbox
 export function loadMunicipalities() {
-  cache ??= fetch(DATA_URL)
-    .then((res) => {
-      if (!res.ok) throw new Error(`municipalities: ${res.status}`);
-      return res.json();
-    })
+  cache ??= fetchJson(MUNICIPALITIES_URL)
     .then(prepareMunicipalities)
     .catch((err) => {
       cache = null; // შემდეგ ჯერზე თავიდან ცდა

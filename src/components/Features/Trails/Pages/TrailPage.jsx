@@ -1,9 +1,13 @@
 import { useMemo, useState } from "react";
 import { useParams } from "react-router";
+import {
+  buildProfile,
+  slopeSegments,
+  waypointsOnTrack,
+} from "@/components/Utils/profile";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/Context/useAuth";
 import { Alert, Button, Loader } from "@/components/UI/Index";
-import { buildProfile, slopeSegments } from "@/components/Utils/profile";
 import { localized } from "@/components/Utils/localized";
 import { downloadGpx } from "@/components/Utils/gpxExport";
 import {
@@ -32,7 +36,7 @@ function toStats(trail) {
     maxEle: trail.maxEle,
     durationHours: trail.estimatedHours,
     recorded:
-      trail.authorHours != null
+      trail.authorHours > 0
         ? { totalHours: trail.authorHours, movingHours: trail.movingHours }
         : null,
   };
@@ -91,6 +95,15 @@ export function TrailPage() {
     [profile],
   );
 
+  // რედაქტირებისას პროფილზეც ახალი წერტილები ჩანს
+  const profileWaypoints = editing ? editor.waypoints : waypoints;
+  const waypointsOnProfile = useMemo(
+    () =>
+      coords && profileWaypoints
+        ? waypointsOnTrack(coords, profileWaypoints)
+        : [],
+    [coords, profileWaypoints],
+  );
   if (trailQuery.isLoading) return <Loader fullPage />;
   if (trailQuery.isError) {
     return (
@@ -161,6 +174,9 @@ export function TrailPage() {
               onToggleSlope={setShowSlope}
               hoverIndex={hoverIndex}
               onHover={setHoverIndex}
+              waypoints={waypointsOnProfile}
+              selectedWaypoint={editing ? editor.selected : selectedWaypoint}
+              onSelectWaypoint={editing ? editor.select : setSelectedWaypoint}
             />
           )}
           <TrackStats stats={stats} />

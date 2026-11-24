@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchTrail, fetchTrailTrack, updateTrailWaypoints } from "@/components/Services/trailService";
+import { fetchTrail,fetchTrails, fetchTrailTrack, updateTrailWaypoints } from "@/components/Services/trailService";
 // ბილიკი და ტრეკი ცალ-ცალკე (პარალელურად): სათაური და სტატისტიკა ტრეკს არ ელოდება
 export function useTrail(id) {
   return useQuery({ queryKey: ["trail", id], queryFn: () => fetchTrail(id), enabled: Boolean(id) });
@@ -18,4 +18,7 @@ export function useSaveWaypoints(id) {
       queryClient.invalidateQueries({ queryKey: ["trail", id] });
     },
   });
+}
+export function useTrails() {
+  return useQuery({ queryKey: ["trails"], queryFn: fetchTrails });
 }
