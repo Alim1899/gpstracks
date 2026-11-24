@@ -1,77 +1,103 @@
 import { useTranslation } from "react-i18next";
 import { Sparkles } from "lucide-react";
 import { LANGUAGES } from "@/i18n";
-import { useAiTranslate } from "@/components/Services/useAiTranslate";
-import { Button, Checkbox, Input, SegmentedControl, Textarea } from "@/components/UI/Index";
+import { Button, Input, Textarea } from "@/components/UI/Index";
 import { translateTexts } from "@/components/Services/translateService";
 import { DESCRIPTION_MAX, TITLE_MAX, getActiveLangs } from "./trailFormSchema";
 import styles from "./TrailForm.module.css";
+import { useAiTranslate } from "@/components/Services/useAiTranslate";
 
-// შევსების ენა + სახელი და აღწერა არჩეულ ენებზე
+const FIELDS = ["title", "description"];
+const LANG_LABELS = Object.fromEntries(LANGUAGES.map((l) => [l.code, l.label]));
+
+/**
+ * რა ითარგმნება: თითო ველი შევსებული ენიდან იმ ენებზე, სადაც ცარიელია
+ * შევსებულ ველს თარგმანი არ ცვლის — ხელახლა სათარგმნად ავტორი ველს ასუფთავებს
+ */
+function buildPlan(values, langs) {
+  return FIELDS.flatMap((field) => {
+    const filled = langs.filter((lang) => values[`${field}_${lang}`].trim());
+    if (!filled.length) return [];
+    return langs
+      .filter((lang) => !filled.includes(lang))
+      .map((to) => ({ field, from: filled[0], to }));
+  });
+}
+
+// სათაური და აღწერა ყველა ენაზე (ორივე სავალდებულო) + ერთი AI თარგმნის ღილაკი
 export function LangFields({ values, setFields, getFieldProps }) {
   const { t } = useTranslation();
-  const activeLangs = getActiveLangs(values);
+  const langs = getActiveLangs(values);
+  const ai = useAiTranslate();
+  const plan = buildPlan(values, langs);
 
-    const ai = useAiTranslate();
+  // ღილაკზე მიმართულება: "ქარ → ENG" ან, თუ ორივე მხარეს რამე ითარგმნება, "ქარ ⇄ ENG"
+  const directions = [...new Set(plan.map((job) => `${job.from}>${job.to}`))];
+  const directionLabel =
+    directions.length === 1
+      ? directions[0].split(">").map((lang) => LANG_LABELS[lang]).join(" → ")
+      : langs.map((lang) => LANG_LABELS[lang]).join(" ⇄ ");
 
-  // სათაური და აღწერა მეორე ენიდან; შედეგი ჩვეულებრივ ველებშია, ავტორს შესწორება შეუძლია
-  async function translateTo(to) {
-    const from = activeLangs.find((lang) => lang !== to);
-    const result = await ai.run(to, () =>
-      translateTexts([values[`title_${from}`], values[`description_${from}`]], from, to),
-    );
-    if (!result) return;
-    const [title, description] = result;
-    setFields({
-      [`title_${to}`]: title,
-      [`description_${to}`]: description,
-      aiLangs: [...new Set([...values.aiLangs, to])],
+  async function translate() {
+    const patch = {};
+    const done = await ai.run("trail", async () => {
+      for (const pair of directions) {
+        const [from, to] = pair.split(">");
+        const jobs = plan.filter((job) => job.from === from && job.to === to);
+        const translated = await translateTexts(
+          jobs.map((job) => values[`${job.field}_${from}`]),
+          from,
+          to,
+        );
+        jobs.forEach((job, i) => {
+          patch[`${job.field}_${to}`] = translated[i];
+        });
+      }
+      return true;
     });
+    if (!done) return;
+
+    const translatedLangs = directions.map((pair) => pair.split(">")[1]);
+    setFields({ ...patch, aiLangs: [...new Set([...values.aiLangs, ...translatedLangs])] });
   }
 
-  // თარგმნა შეიძლება, თუ მეორე ენაზე სათაური ან აღწერა შევსებულია
-  const hasSource = (to) => {
-    const from = activeLangs.find((lang) => lang !== to);
-    return Boolean(values[`title_${from}`]?.trim() || values[`description_${from}`]?.trim());
-  };
+  // ერთი ადგილი შეტყობინებისთვის: შეცდომა → ნათარგმნია → რა უნდა ქნას ავტორმა
+  const status = ai.failed
+    ? { text: t("translate.error"), error: true }
+    : values.aiLangs.length
+      ? {
+          text: t("trailForm.aiTranslatedNote", {
+            langs: values.aiLangs.map((lang) => LANG_LABELS[lang]).join(", "),
+          }),
+        }
+      : { text: t(plan.length ? "trailForm.aiTranslateReady" : "trailForm.aiTranslateIdle") };
 
   return (
     <>
-      <div className={styles.langBar}>
-        <span className={styles.langLabel}>{t("trailForm.contentLang")}</span>
-        <SegmentedControl
-          ariaLabel={t("trailForm.contentLang")}
-          options={LANGUAGES.map((l) => ({ value: l.code, label: l.label }))}
-          value={values.primaryLang}
-          onChange={(code) => setFields({ primaryLang: code })}
-        />
-        <Checkbox
-          label={t("trailForm.bothLangs")}
-          checked={values.bothLangs}
-          onChange={(checked) => setFields({ bothLangs: checked })}
-        />
+      <div className={styles.translateBar}>
+        <Button
+          variant="outline"
+          onClick={translate}
+          loading={ai.pending === "trail"}
+          disabled={!plan.length || ai.pending != null}
+        >
+          <Sparkles size={16} />
+          {t("trailForm.aiTranslate")}
+          {plan.length > 0 && <span className={styles.direction}>{directionLabel}</span>}
+        </Button>
+        <p className={`${styles.translateStatus} ${status.error ? styles.aiError : ""}`} role="status">
+          {status.text}
+        </p>
       </div>
 
-    <div className={values.bothLangs ? styles.langGrid : undefined}>
-        {activeLangs.map((lang) => (
-          <div key={lang} className={values.bothLangs ? styles.langGroup : styles.fields}>
-            {values.bothLangs && <h3 className={styles.langTitle}>{t(`languages.${lang}`)}</h3>}            {values.bothLangs && (
-              <div className={styles.langHead}>
-                <h3 className={styles.langTitle}>{t(`languages.${lang}`)}</h3>
-                <Button
-                  variant="link"
-                  onClick={() => translateTo(lang)}
-                  loading={ai.pending === lang}
-                  disabled={!hasSource(lang) || ai.pending != null}
-                  title={t("trailForm.aiTranslateHint")}
-                >
-                  <Sparkles size={16} />
-                  {t("trailForm.aiTranslate")}
-                </Button>
-              </div>
-            )}
-            {ai.failed === lang && <p className={styles.aiError}>{t("translate.error")}</p>}
-            {values.aiLangs.includes(lang) && <p className={styles.aiNote}>{t("trailForm.aiTranslatedNote")}</p>}
+      <div className={styles.langGrid}>
+        {langs.map((lang) => (
+          <div key={lang} className={styles.langGroup}>
+            <h3 className={styles.langTitle}>
+              {t(`languages.${lang}`)}
+              {values.aiLangs.includes(lang) && <span className={styles.aiBadge}>AI</span>}
+            </h3>
+
             <Input
               label={`${t("trailForm.title")} *`}
               placeholder={t("trailForm.titlePlaceholder", { lng: lang })}

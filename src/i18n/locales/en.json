@@ -296,8 +296,9 @@
   "languages": { "ka": "ქართული", "en": "English" },
   "trailForm": {
     "aiTranslate": "AI translate",
-    "aiTranslateHint": "The title and description are translated from the other language",
-    "aiTranslatedNote": "Translated by AI — review it and fix anything if needed.",
+    "aiTranslateIdle": "Fill in the title and description in one language — the other one is filled by AI.",
+    "aiTranslateReady": "Press to translate the empty fields from the other language. You can edit the result afterwards.",
+    "aiTranslatedNote": "{{langs}} translated by AI — review it and fix anything if needed. Clear a field to translate it again.",
     "slowSubmit": "Submitting is taking longer than usual. Check your internet connection. A browser ad blocker (e.g. Brave Shields) may be blocking the connection.",
     "viewTrail": "View trail",
     "municipalitiesAutoHint": "Detected from the track. Check it and change it if needed",

@@ -37,7 +37,7 @@ export function TrailForm({
   onActivityChange,
   onLangsChange,
 }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [submitError, setSubmitError] = useState(null); // თარგმანის გასაღები
   const [slow, setSlow] = useState(false); // გაგზავნას ჩვეულებრივზე მეტი დრო სჭირდება
   const {
@@ -49,7 +49,6 @@ export function TrailForm({
     isSubmitting,
   } = useForm(
     createInitialValues({
-      lang: i18n.resolvedLanguage,
       routeType,
       municipalities,
     }),

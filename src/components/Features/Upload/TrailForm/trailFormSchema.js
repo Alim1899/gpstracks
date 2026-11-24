@@ -8,10 +8,8 @@ export const DESCRIPTION_MAX = 2000;
 const LANG_CODES = LANGUAGES.map((l) => l.code);
 
 // სათაური და აღწერა ყველა ენისთვის: title_ka, title_en, description_ka, ...
-export function createInitialValues({ lang, routeType, municipalities }) {
+export function createInitialValues({ routeType, municipalities }) {
   const values = {
-    primaryLang: LANG_CODES.includes(lang) ? lang : LANG_CODES[0],
-    bothLangs: false,
     activity: "",
     difficulty: "",
     municipalities: municipalities ?? [],
@@ -31,12 +29,8 @@ export function createInitialValues({ lang, routeType, municipalities }) {
 }
 
 // რომელ ენებზე ავსებს ავტორი: არჩეული პირველია
-export function getActiveLangs(values) {
-  if (!values.bothLangs) return [values.primaryLang];
-  return [
-    values.primaryLang,
-    ...LANG_CODES.filter((c) => c !== values.primaryLang),
-  ];
+export function getActiveLangs() {
+  return LANG_CODES;
 }
 
 export function validateTrail(values) {
