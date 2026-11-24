@@ -4,7 +4,13 @@ import { List, Map as MapIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Loader } from "@/components/UI/Index";
 import { useTrails } from "@/hooks/useTrails";
-import { applyFilters, filtersToParams, parseFilters } from "@/components/Utils/trailFilters";
+import {
+  applyFilters,
+  countExtraFilters,
+  filtersToParams,
+  parseFilters,
+} from "@/components/Utils/trailFilters";
+import { ActivityBar } from "../ActivityBar/ActivityBar";
 import { TrailFilters } from "../TrailFilters/TrailFilters";
 import { TrailCard } from "../TrailCard/TrailCard";
 import { TrailsMap } from "../TrailsMap/TrailsMap";
@@ -16,6 +22,18 @@ export function HomePage() {
   const filters = useMemo(() => parseFilters(params), [params]);
   const { data: trails, isLoading, isError } = useTrails();
   const visible = useMemo(() => applyFilters(trails ?? [], filters), [trails, filters]);
+
+  // აქტივობის ღილაკებზე რიცხვები: დანარჩენი ფილტრების გათვალისწინებით, აქტივობის გარეშე
+  const activityCounts = useMemo(() => {
+    const counts = {};
+    for (const trail of applyFilters(trails ?? [], { ...filters, activity: "", difficulty: [] })) {
+      counts[trail.activity] = (counts[trail.activity] ?? 0) + 1;
+    }
+    return counts;
+  }, [trails, filters]);
+
+  // ფილტრის გარეშე რუკა მთელ საქართველოს აჩვენებს, ფილტრით — ნაპოვნ ბილიკებს
+  const filtered = Boolean(filters.activity) || countExtraFilters(filters) > 0;
 
   const [hoveredId, setHoveredId] = useState(null); // ბარათი ↔ მარკერი
   const [mobileView, setMobileView] = useState("list"); // list | map
@@ -51,26 +69,36 @@ export function HomePage() {
   }
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} data-view={mobileView}>
       <title>GPS Tracks</title>
-      <TrailFilters filters={filters} onChange={updateFilters} onReset={resetFilters} shown={visible.length} />
 
-      <div className={styles.content} data-view={mobileView}>
-        <section className={styles.listPanel} aria-label={t("home.list")}>
-          {!isLoading && !isError && trails.length > 0 && (
-            <p className={styles.count}>{t("home.results", { count: visible.length })}</p>
-          )}
-          {renderList()}
-        </section>
-        <section className={styles.mapPanel} aria-label={t("home.map")}>
-          <TrailsMap
-            trails={visible}
-            activeId={hoveredId}
-            onHover={setHoveredId}
-            visible={mobileView === "map"}
-          />
-        </section>
+      <div className={styles.activity}>
+        <ActivityBar
+          value={filters.activity}
+          // სხვა აქტივობას სხვა სირთულეები აქვს: არჩეული სირთულე იშლება
+          onChange={(activity) => updateFilters({ activity, difficulty: [] })}
+          counts={activityCounts}
+        />
       </div>
+
+      <aside className={styles.sidebar} aria-label={t("home.list")}>
+        <TrailFilters filters={filters} onChange={updateFilters} onReset={resetFilters} />
+        {!isLoading && !isError && trails.length > 0 && (
+          <p className={styles.count}>{t("home.results", { count: visible.length })}</p>
+        )}
+        {renderList()}
+      </aside>
+
+      <section className={styles.mapPanel} aria-label={t("home.map")}>
+        <TrailsMap
+          trails={visible}
+          activeId={hoveredId}
+          onHover={setHoveredId}
+          visible={mobileView === "map"}
+          municipalities={filters.municipalities}
+          fitToTrails={filtered}
+        />
+      </section>
 
       <button type="button" className={styles.viewToggle} onClick={toggleView}>
         {mobileView === "list" ? (

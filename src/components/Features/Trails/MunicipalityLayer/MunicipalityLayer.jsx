@@ -1,21 +1,68 @@
-import { useMemo } from "react";
-import { GeoJSON, Pane } from "react-leaflet";
+import { useEffect, useMemo } from "react";
+import { GeoJSON, Pane, useMap } from "react-leaflet";
+import L from "leaflet";
 import { useQuery } from "@tanstack/react-query";
 import { fetchJson, GEORGIA_MASK_URL, MUNICIPALITIES_URL } from "@/components/Utils/mapData";
+import styles from "./MunicipalityLayer.module.css";
 
-// საქართველოს გარეთ: ნაცრისფერი, ნახევრად გამჭვირვალე ფენა (ყურადღება ქვეყანაზე)
 const MASK_STYLE = { stroke: false, fillColor: "#777271", fillOpacity: 0.4 };
 const BORDER_STYLE = { color: "#3d4a44", weight: 1, opacity: 0.55, fill: false };
-const SELECTED_STYLE = { color: "#2f6b4f", weight: 2.5, opacity: 1, fillColor: "#2f6b4f", fillOpacity: 0.08 };
-
+const SELECTED_STYLE = { color: "#f70202", weight: 3, opacity: 1, fillColor: "#2f6b4f", fillOpacity: 0.08 };
+const PAD = 50;
 const useGeoJson = (url) =>
   useQuery({ queryKey: ["geojson", url], queryFn: () => fetchJson(url), staleTime: Infinity });
 
 /**
- * ფონი: საქართველოს გარეთ დაბნელებული, მუნიციპალიტეტების საზღვრები, ფილტრში არჩეულები გამოკვეთილი
- * ცალკე pane: tile-ების ზემოთ, ხაზებისა და მარკერების ქვემოთ, დაჭერას არ იჭერს
+ * საქართველოს გარეთ რუკა ბუნდოვანია, საქართველო — მკვეთრი.
+ * backdrop-filter ფენა საქართველოს ფორმის „ხვრელით“ (clip-path evenodd),
+ * რუკის ყოველ გადაადგილებაზე თავიდან ითვლება. მხოლოდ შემოუბრუნებელ რუკაზე.
  */
-export function MunicipalityLayer({ selected = [] }) {
+function BlurOutside({ mask }) {
+  const map = useMap();
+
+  useEffect(() => {
+    const pane = map.getPane("blurOutside") ?? map.createPane("blurOutside");
+    pane.style.zIndex = 250; // tile-ების (200) ზემოთ, საზღვრებისა (350) და მარკერების ქვემოთ
+    pane.style.pointerEvents = "none";
+    const layer = L.DomUtil.create("div", styles.blur, pane);
+    const rings = mask.features[0].geometry.coordinates.slice(1); // ხვრელები = საქართველო
+
+    function update() {
+      const { x: width, y: height } = map.getSize();
+      L.DomUtil.setPosition(layer, map.containerPointToLayerPoint([0, 0]));
+      layer.style.width = `${width}px`;
+      layer.style.height = `${height}px`;
+
+           // ხვრელები ეკრანის ჩარჩოთი იჭრება: დიდ ზუმზე კოორდინატები უზარმაზარი ხდება
+      // და ბრაუზერი clip-path-ს ვეღარ ხატავს — მთელი რუკა ბუნდოვანდებოდა
+      const view = L.bounds([-PAD, -PAD], [width + PAD, height + PAD]);
+      const holes = rings
+        .map((ring) => {
+          const points = ring.map(([lng, lat]) => map.latLngToContainerPoint([lat, lng]));
+          const clipped = L.PolyUtil.clipPolygon(points, view);
+          if (clipped.length < 3) return "";
+          return "M" + clipped.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join("L") + "Z";
+        })
+        .join("");
+      layer.style.clipPath = `path(evenodd, "M0 0H${width}V${height}H0Z${holes}")`;
+    }
+
+    update();
+    map.on("move zoom viewreset resize", update);
+    return () => {
+      map.off("move zoom viewreset resize", update);
+      layer.remove();
+    };
+  }, [map, mask]);
+
+  return null;
+}
+
+/**
+ * ფონი: საქართველოს გარეთ დაბნელებული ან ბუნდოვანი, მუნიციპალიტეტების საზღვრები, არჩეულები გამოკვეთილი.
+ * blurOutside: გარეთ ბუნდოვანი (მთავარი გვერდი); სხვა შემთხვევაში ნაცრისფერი ფენა
+ */
+export function MunicipalityLayer({ selected = [], blurOutside = false }) {
   const { data: mask } = useGeoJson(GEORGIA_MASK_URL);
   const { data: municipalities } = useGeoJson(MUNICIPALITIES_URL);
 
@@ -27,13 +74,15 @@ export function MunicipalityLayer({ selected = [] }) {
   }, [municipalities, selectedKey]);
 
   return (
-    <Pane name="context" style={{ zIndex: 350, pointerEvents: "none" }}>
-      {mask && <GeoJSON data={mask} interactive={false} style={MASK_STYLE} />}
-      {municipalities && <GeoJSON data={municipalities} interactive={false} style={BORDER_STYLE} />}
-      {/* key: react-leaflet GeoJSON-ის data არ ახლდება — არჩევანის შეცვლისას ფენა თავიდან იქმნება */}
-      {selectedData && (
-        <GeoJSON key={selectedKey} data={selectedData} interactive={false} style={SELECTED_STYLE} />
-      )}
-    </Pane>
+    <>
+      {mask && blurOutside && <BlurOutside mask={mask} />}
+      <Pane name="context" style={{ zIndex: 350, pointerEvents: "none" }}>
+        {mask && !blurOutside && <GeoJSON data={mask} interactive={false} style={MASK_STYLE} />}
+        {municipalities && <GeoJSON data={municipalities} interactive={false} style={BORDER_STYLE} />}
+        {selectedData && (
+          <GeoJSON key={selectedKey} data={selectedData} interactive={false} style={SELECTED_STYLE} />
+        )}
+      </Pane>
+    </>
   );
 }

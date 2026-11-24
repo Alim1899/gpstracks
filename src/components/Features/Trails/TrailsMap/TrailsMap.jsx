@@ -16,8 +16,11 @@ import { MapLayers } from "../MapLayers/MapLayers";
 import styles from "./TrailsMap.module.css";
 
 import { MunicipalityLayer } from "../MunicipalityLayer/MunicipalityLayer";
-const GEORGIA_CENTER = [42.2, 43.5];
-const GEORGIA_ZOOM = 7;
+// საქართველოს საზღვრები (სამხრეთ-დასავლეთი, ჩრდილო-აღმოსავლეთი): ფილტრის გარეშე რუკა ამას ერგება
+const GEORGIA_BOUNDS = [
+  [41.05, 40.0],
+  [43.59, 46.74],
+];
 const ICONS = { hiking: Footprints, running: Activity, mountaineering: Mountain, offroad: Car };
 
 // მარკერი: სირთულის ფერის წრე აქტივობის იკონით; მონიშნული — უფრო დიდი (ქეშით)
@@ -45,14 +48,20 @@ const startOf = (trail) => [trail.start.latitude, trail.start.longitude];
 
 // ფილტრის შეცვლისას რუკა ნაჩვენებ ბილიკებს მოერგება (trails ახლდება მხოლოდ ფილტრის ცვლილებაზე).
 // მობილურზე რუკა დამალულია (ზომა 0): მორგება ხდება მაშინ, როცა გამოჩნდება (visible)
-function FitToTrails({ trails, visible }) {
+// რუკის მორგება: ფილტრის გარეშე — მთელ საქართველოზე, ფილტრით — ნაპოვნ ბილიკებზე.
+// მობილურზე რუკა დამალულია (ზომა 0): მორგება ხდება მაშინ, როცა გამოჩნდება (visible)
+function FitView({ trails, fitToTrails, visible }) {
   const map = useMap();
   useEffect(() => {
     map.invalidateSize();
     const { x, y } = map.getSize();
-    if (!trails.length || !x || !y) return;
-    map.fitBounds(trails.map(startOf), { padding: [40, 40], maxZoom: 11 });
-  }, [map, trails, visible]);
+    if (!x || !y) return;
+    if (fitToTrails && trails.length) {
+      map.fitBounds(trails.map(startOf), { padding: [40, 40], maxZoom: 11 });
+    } else {
+      map.fitBounds(GEORGIA_BOUNDS, { padding: [8, 8] });
+    }
+  }, [map, trails, fitToTrails, visible]);
   return null;
 }
 
@@ -61,15 +70,21 @@ function FitToTrails({ trails, visible }) {
  * activeId: მონიშნული (ბარათზე მიტანა); onHover(id | null): ბარათის მონიშვნა
  * visible: მობილურზე რუკის ხედი ჩართულია (გამოჩენისას ზომა და საზღვრები თავიდან)
  */
-export function TrailsMap({ trails, activeId, onHover, visible = true,municipalities  }) {
+export function TrailsMap({ trails, activeId, onHover, visible = true,municipalities,fitToTrails=false  }) {
   const { t, i18n } = useTranslation();
   const withStart = useMemo(() => trails.filter((trail) => trail.start), [trails]);
 
   return (
-    <MapContainer className={styles.map} center={GEORGIA_CENTER} zoom={GEORGIA_ZOOM} rotateControl={false}>
+   <MapContainer
+      className={styles.map}
+      bounds={GEORGIA_BOUNDS}
+      zoomSnap={0.25}
+      zoomDelta={0.5}
+      rotateControl={false}
+    >
       <MapLayers />
-            <MunicipalityLayer selected={municipalities} />
-      <FitToTrails trails={withStart} visible={visible} />
+      <MunicipalityLayer selected={municipalities} blurOutside />
+      <FitView trails={withStart} fitToTrails={fitToTrails} visible={visible} />
 
       {withStart.map((trail) => {
         const active = trail.id === activeId;

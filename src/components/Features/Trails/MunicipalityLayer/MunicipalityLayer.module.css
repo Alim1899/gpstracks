@@ -1,0 +1,9 @@
+/* საქართველოს გარეთ: ბუნდოვანი და ოდნავ გაუფერულებული რუკა */
+.blur {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgb(255 255 255 / 0.12);
+  -webkit-backdrop-filter: blur(4px) grayscale(0.5);
+  backdrop-filter: blur(4px) grayscale(0.5);
+}
