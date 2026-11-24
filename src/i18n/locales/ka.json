@@ -370,6 +370,8 @@
     }
   },
   "waypoints": {
+    "translateName": "თარგმნა",
+    "translating": "ითარგმნება...",
     "translateNames": "სახელების თარგმნა",
     "translateNamesHint": "აკლებული სახელები AI-ით ითარგმნება",
     "title": "წერტილები",

@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, Trash2, X } from "lucide-react";
+import { Check, Sparkles, Trash2, X } from "lucide-react";
 import { LANGUAGES } from "@/i18n";
 import { WaypointPin } from "@/components/Features/Common/WaypointPin/WaypointPin";
-import { WAYPOINT_NAME_MAX, WAYPOINT_TYPES, missingNameLangs } from "@/components/Utils/waypoints";
+import {
+  WAYPOINT_NAME_MAX,
+  WAYPOINT_TYPES,
+  missingNameLangs,
+} from "@/components/Utils/waypoints";
 import styles from "./WaypointForm.module.css";
+import { translateTexts } from "@/components/Services/translateService";
+import { useAiTranslate } from "@/components/Services/useAiTranslate";
 
 const LANG_LABELS = Object.fromEntries(LANGUAGES.map((l) => [l.code, l.label]));
 
@@ -13,19 +19,45 @@ const LANG_LABELS = Object.fromEntries(LANGUAGES.map((l) => [l.code, l.label]));
  * langs: ბილიკის ენები; სახელი ან ცარიელია, ან ყველა ენაზეა შევსებული
  * isNew: ახალი წერტილი (გაუქმება = წაშლა)
  */
-export function WaypointForm({ waypoint, langs, isNew, onChange, onConfirm, onDelete }) {
+export function WaypointForm({
+  waypoint,
+  langs,
+  isNew,
+  onChange,
+  onConfirm,
+  onDelete,
+}) {
   const { t } = useTranslation();
   const formRef = useRef(null);
   const missing = missingNameLangs(waypoint, langs);
   // არსებულ არასრულ წერტილზე (მაგ. ბილიკს ენა დაემატა) შეცდომა მაშინვე ჩანს
-  const [showMissing, setShowMissing] = useState(() => !isNew && missing.length > 0);
+  const [showMissing, setShowMissing] = useState(
+    () => !isNew && missing.length > 0,
+  );
 
   // preventScroll: ფოკუსმა გვერდი არ ჩამოასქროლოს
   useEffect(() => {
-    const first = formRef.current?.querySelector('[aria-invalid="true"]') ?? formRef.current?.querySelector("input");
+    const first =
+      formRef.current?.querySelector('[aria-invalid="true"]') ??
+      formRef.current?.querySelector("input");
     first?.focus({ preventScroll: true });
   }, []);
 
+    const ai = useAiTranslate();
+  // სახელი ერთ ენაზეა, მეორეზე აკლია → AI-ით შევსება
+  const source = langs.find((lang) => waypoint.name?.[lang]?.trim());
+  const canTranslate = Boolean(source) && missing.length > 0;
+
+  async function translateName() {
+    const translated = await ai.run("name", async () => {
+      const name = {};
+      for (const to of missing) {
+        [name[to]] = await translateTexts([waypoint.name[source]], source, to);
+      }
+      return name;
+    });
+    if (translated) onChange({ name: { ...waypoint.name, ...translated } });
+  }
   function changeName(lang, value) {
     onChange({ name: { ...waypoint.name, [lang]: value } });
   }
@@ -34,7 +66,9 @@ export function WaypointForm({ waypoint, langs, isNew, onChange, onConfirm, onDe
     e.preventDefault();
     if (missing.length) {
       setShowMissing(true);
-      formRef.current.querySelector(`input[lang="${missing[0]}"]`)?.focus({ preventScroll: true });
+      formRef.current
+        .querySelector(`input[lang="${missing[0]}"]`)
+        ?.focus({ preventScroll: true });
       return;
     }
     onConfirm();
@@ -47,8 +81,15 @@ export function WaypointForm({ waypoint, langs, isNew, onChange, onConfirm, onDe
       {langs.map((lang) => {
         const invalid = showMissing && missing.includes(lang);
         return (
-          <div key={lang} className={`${styles.field} ${invalid ? styles.invalid : ""}`}>
-            {multi && <span className={styles.langTag}>{LANG_LABELS[lang] ?? lang}</span>}
+          <div
+            key={lang}
+            className={`${styles.field} ${invalid ? styles.invalid : ""}`}
+          >
+            {multi && (
+              <span className={styles.langTag}>
+                {LANG_LABELS[lang] ?? lang}
+              </span>
+            )}
             <input
               className={styles.input}
               lang={lang}
@@ -62,13 +103,30 @@ export function WaypointForm({ waypoint, langs, isNew, onChange, onConfirm, onDe
           </div>
         );
       })}
-      {showMissing && missing.length > 0 && (
-        <div className={styles.error} role="alert">
-          {t("waypoints.nameAllLangs")}
+            {(canTranslate || ai.failed) && (
+        <div className={styles.nameActions}>
+          <div className={styles.error} role="alert">
+            {ai.failed ? t("translate.error") : showMissing ? t("waypoints.nameAllLangs") : null}
+          </div>
+          {canTranslate && (
+            <button
+              type="button"
+              className={styles.translate}
+              onClick={translateName}
+              disabled={ai.pending != null}
+            >
+              <Sparkles size={14} />
+              {ai.pending ? t("waypoints.translating") : t("waypoints.translateName")}
+            </button>
+          )}
         </div>
       )}
 
-      <div className={styles.types} role="radiogroup" aria-label={t("waypoints.type")}>
+      <div
+        className={styles.types}
+        role="radiogroup"
+        aria-label={t("waypoints.type")}
+      >
         {WAYPOINT_TYPES.map(({ id }) => (
           <button
             key={id}

@@ -75,7 +75,7 @@ const NAME_HINTS = [
   ["camp", /camp|tent|ბანაკ|კარავ/],
   ["shelter", /hut|shelter|cottage|lodge|refuge|ქოხ|კოტეჯ|თავშესაფ/],
   ["pass", /\bpass\b|saddle|უღელტეხ/],
-  ["peak", /summit|peak|მწვერვალ/],
+  ["peak", /summit|peak|\bmount\b|\bmt\b|მწვერვალ/],
   ["viewpoint", /viewpoint|view point|ხედ/],
   ["lake", /lake|ტბა|ტბის/],
   ["parking", /parking|პარკინგ|ავტოსადგომ/],
@@ -84,7 +84,9 @@ const NAME_HINTS = [
 ];
 
 function guessFromName(name) {
-  const text = (typeof name === "string" ? name : Object.values(name ?? {}).join(" ")).toLowerCase();
+  const text = (
+    typeof name === "string" ? name : Object.values(name ?? {}).join(" ")
+  ).toLowerCase();
   return NAME_HINTS.find(([, pattern]) => pattern.test(text))?.[0] ?? "other";
 }
 
@@ -96,31 +98,87 @@ export function normalizeWaypointType(raw, name) {
 }
 
 const ID_ONLY = /^[\s\-–—|:#]*[0-9a-f]{6,}\s*$/i;
-const cleanDesc = (desc) => (typeof desc === "string" && !ID_ONLY.test(desc) ? desc.trim() : "");
+const cleanDesc = (desc) =>
+  typeof desc === "string" && !ID_ONLY.test(desc) ? desc.trim() : "";
 
-// ფაილიდან ან ბაზიდან მოსული წერტილი → ერთიანი, სუფთა ფორმატი
-const GEORGIAN = /[\u10A0-\u10FF\u1C90-\u1CBF]/;
+const GEORGIAN_CHARS = /[\u10A0-\u10FF\u1C90-\u1CBF]/g;
+const LATIN_CHARS = /[A-Za-z]/g;
+const countChars = (text, pattern) => (text.match(pattern) ?? []).length;
+// ქართულად ითვლება 2+ ქართული ასოთი; ორენოვანია, თუ ამასთან 3+ ლათინური ასოც აქვს
+const MIN_GEORGIAN = 2;
+const MIN_LATIN = 3;
+// გაყოფის შემდეგ ბოლოებზე დარჩენილი გამყოფები ("-", "|", "/", ":", ფრჩხილები) და ცარიელი "()"
+function tidy(text) {
+  return text
+    .replace(/\(\s*\)/g, "")
+    .replace(/^[\s\-–—|/:,;(]+|[\s\-–—|/:,;)]+$/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+function splitMixed(text) {
+  const parts = { ka: [], en: [] };
+  let current = null;
+  let pending = []; // ენამდე შემხვედრი ციფრები/ნიშნები — პირველ სიტყვას მიჰყვება
+
+  for (const word of text.split(/\s+/).filter(Boolean)) {
+    const georgian = countChars(word, GEORGIAN_CHARS);
+    const latin = countChars(word, LATIN_CHARS);
+    const lang = georgian > latin ? "ka" : latin > georgian ? "en" : current;
+
+    if (!lang) {
+      pending.push(word);
+      continue;
+    }
+    if (pending.length) {
+      parts[lang].push(...pending);
+      pending = [];
+    }
+    parts[lang].push(word);
+    current = lang;
+  }
+
+  return { ka: tidy(parts.ka.join(" ")), en: tidy(parts.en.join(" ")) };
+}
+
+// სახელის ობიექტი ცარიელი ენების გარეშე, ტექსტი ბოლოებში გასუფთავებული
+export function cleanName(name) {
+  return Object.fromEntries(
+    Object.entries(name ?? {})
+      .filter(([, value]) => typeof value === "string" && value.trim())
+      .map(([lang, value]) => [lang, value.trim()]),
+  );
+}
+
+// ტექსტი → { ka } ან { en }, ორენოვანი კი იყოფა ორად
+function splitText(raw) {
+  const text = raw.trim();
+  if (!text) return {};
+  const georgian = countChars(text, GEORGIAN_CHARS);
+  const latin = countChars(text, LATIN_CHARS);
+
+  if (georgian >= MIN_GEORGIAN && latin >= MIN_LATIN) {
+    return cleanName(splitMixed(text));
+  }
+  return georgian >= MIN_GEORGIAN ? { ka: text } : { en: text };
+}
 
 /**
- * სახელი → { ka, en } (ცარიელი ენების გარეშე)
- * ძველი ტექსტი ("წყალი | Water") ენებად იყოფა ანბანით: ქართული → ka, დანარჩენი → en
+ * ფაილიდან ან ბაზიდან მოსული სახელი → { ka, en }
+ * - ტექსტი ("ბეთლების ეკლესია - Betlemi Church") ანბანით ნაწილდება
+ * - ძველი ჩანაწერი ({ ka: "საწყისი - Start" }) იყოფა მხოლოდ მაშინ, როცა სხვა ენა საერთოდ აკლია:
+ *   ავტორის მიერ ორივე ენაზე შევსებულ სახელს არ ვეხებით
  */
 export function splitName(raw) {
-  if (raw && typeof raw === "object") {
-    return Object.fromEntries(
-      Object.entries(raw)
-        .filter(([, value]) => typeof value === "string" && value.trim())
-        .map(([lang, value]) => [lang, value.trim()]),
-    );
-  }
-  if (typeof raw !== "string") return {};
+  if (typeof raw === "string") return splitText(raw);
 
-  const name = {};
-  for (const part of raw.split("|").map((p) => p.trim()).filter(Boolean)) {
-    const lang = GEORGIAN.test(part) ? "ka" : "en";
-    name[lang] = name[lang] ? `${name[lang]} | ${part}` : part;
-  }
-  return name;
+  const name = cleanName(raw);
+  const langs = Object.keys(name);
+  if (langs.length !== 1) return name;
+
+  const [lang] = langs;
+  const parts = splitText(name[lang]);
+  return parts[lang] && Object.keys(parts).length > 1 ? parts : name;
 }
 
 // ფაილიდან ან ბაზიდან მოსული წერტილი → ერთიანი, სუფთა ფორმატი
@@ -138,7 +196,8 @@ export function normalizeWaypoint(w) {
 // სახელი საჭირო ენაზე; თუ ამ ენაზე არ არის, სხვა ენაზე ({ text, lang })
 export const waypointName = (w, lang) => localized(w.name, lang);
 
-const hasName = (w) => Object.values(w.name ?? {}).some((value) => value?.trim());
+const hasName = (w) =>
+  Object.values(w.name ?? {}).some((value) => value?.trim());
 
 // რომელ ენებზე აკლია სახელი: უსახელო წერტილი სრულია, სახელიანს ბილიკის ყველა ენაზე სჭირდება
 export function missingNameLangs(w, langs) {

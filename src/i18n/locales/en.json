@@ -370,6 +370,8 @@
     }
   },
   "waypoints": {
+    "translateName": "Translate",
+"translating": "Translating...",
     "translateNames": "Translate names",
     "translateNamesHint": "Missing names are translated by AI",
     "title": "Waypoints",

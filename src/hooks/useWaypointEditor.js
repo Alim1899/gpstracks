@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useReducer } from "react";
-import { MAX_WAYPOINTS, splitName } from "@/components/Utils/waypoints";
+import { MAX_WAYPOINTS, cleanName } from "@/components/Utils/waypoints";
 
 // draft: ახლად დამატებული, ჯერ დაუდასტურებელი წერტილის index (ყოველთვის ბოლოა)
 const INITIAL = { waypoints: [], selected: null, draft: null, adding: false };
@@ -23,13 +23,20 @@ function reducer(state, action) {
     case "add": {
       if (state.waypoints.length >= MAX_WAYPOINTS) return state;
       const index = state.waypoints.length;
-      return { waypoints: [...state.waypoints, action.waypoint], selected: index, draft: index, adding: false };
+      return {
+        waypoints: [...state.waypoints, action.waypoint],
+        selected: index,
+        draft: index,
+        adding: false,
+      };
     }
 
     case "update":
       return {
         ...state,
-        waypoints: state.waypoints.map((w, i) => (i === action.index ? { ...w, ...action.patch } : w)),
+        waypoints: state.waypoints.map((w, i) =>
+          i === action.index ? { ...w, ...action.patch } : w,
+        ),
       };
 
     case "remove":
@@ -51,11 +58,16 @@ function reducer(state, action) {
 
     // popup დაიხურა (✕, რუკაზე დაწკაპუნება, Escape): დაუდასტურებელი ახალი წერტილი იშლება
     case "close":
-      if (state.selected !== action.index && state.draft !== action.index) return state;
+      if (state.selected !== action.index && state.draft !== action.index)
+        return state;
       return { ...dropDraft(state), selected: null };
 
     case "adding":
-      return { ...dropDraft(state), adding: action.on, selected: action.on ? null : state.selected };
+      return {
+        ...dropDraft(state),
+        adding: action.on,
+        selected: action.on ? null : state.selected,
+      };
 
     default:
       return state;
@@ -85,12 +97,12 @@ export function useWaypointEditor() {
   );
 
   // შესანახი სია: დაუდასტურებელი ახალი წერტილის გარეშე
-   // შესანახი სია: დაუდასტურებელი ახალი წერტილის გარეშე, სახელები ცარიელი ენების გარეშე
+  // შესანახი სია: დაუდასტურებელი ახალი წერტილის გარეშე, სახელები ცარიელი ენების გარეშე
   const saved = useMemo(
     () =>
       state.waypoints
         .filter((_, i) => i !== state.draft)
-        .map((w) => ({ ...w, name: splitName(w.name) })),
+        .map((w) => ({ ...w, name: cleanName(w.name) })),
     [state.waypoints, state.draft],
   );
   const isDraft = useCallback((index) => index === state.draft, [state.draft]);
