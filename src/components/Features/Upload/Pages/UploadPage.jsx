@@ -169,6 +169,7 @@ export function UploadPage() {
               selected={wp.selected}
               onSelect={wp.select}
               onDelete={wp.remove}
+              onUpdate={wp.update}
             />
           </aside>
 

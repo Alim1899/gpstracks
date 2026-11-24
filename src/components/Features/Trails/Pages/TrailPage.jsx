@@ -6,7 +6,10 @@ import { Alert, Button, Loader } from "@/components/UI/Index";
 import { buildProfile, slopeSegments } from "@/components/Utils/profile";
 import { localized } from "@/components/Utils/localized";
 import { downloadGpx } from "@/components/Utils/gpxExport";
-import { firstIncompleteWaypoint, waypointName } from "@/components/Utils/waypoints";
+import {
+  firstIncompleteWaypoint,
+  waypointName,
+} from "@/components/Utils/waypoints";
 import { NotFoundPage } from "@/components/Features/Common/Pages/NotFoundPage";
 import { WaypointEditor } from "@/components/Features/Upload/WaypointEditor/WaypointEditor";
 import { useSaveWaypoints, useTrail, useTrailTrack } from "@/hooks/useTrails";
@@ -79,8 +82,14 @@ export function TrailPage() {
   }
 
   // პროფილი და დახრილობის მონაკვეთები — ერთხელ, ტრეკის ჩატვირთვისას
-  const profile = useMemo(() => (coords ? buildProfile(coords) : null), [coords]);
-  const segments = useMemo(() => (profile ? slopeSegments(profile) : []), [profile]);
+  const profile = useMemo(
+    () => (coords ? buildProfile(coords) : null),
+    [coords],
+  );
+  const segments = useMemo(
+    () => (profile ? slopeSegments(profile) : []),
+    [profile],
+  );
 
   if (trailQuery.isLoading) return <Loader fullPage />;
   if (trailQuery.isError) {
@@ -112,7 +121,10 @@ export function TrailPage() {
             name: title,
             coords,
             // GPX-ში სახელი ერთ ენაზე: საიტის მიმდინარე ენით
-            waypoints: waypoints?.map((w) => ({ ...w, name: waypointName(w, lang).text })),
+            waypoints: waypoints?.map((w) => ({
+              ...w,
+              name: waypointName(w, lang).text,
+            })),
           })
         }
       />
@@ -164,19 +176,28 @@ export function TrailPage() {
                 selected={editor.selected}
                 onSelect={editor.select}
                 onDelete={editor.remove}
+                onUpdate={editor.update}
               />
               <Alert variant="error">
                 {saveWaypoints.isError
                   ? t("waypoints.saveError")
-                  : showIncomplete && firstIncompleteWaypoint(editor.saved, langs) >= 0
+                  : showIncomplete &&
+                      firstIncompleteWaypoint(editor.saved, langs) >= 0
                     ? t("waypoints.incomplete")
                     : null}
               </Alert>
               <div className={styles.editActions}>
-                <Button variant="outline" onClick={cancelEditing} disabled={saveWaypoints.isPending}>
+                <Button
+                  variant="outline"
+                  onClick={cancelEditing}
+                  disabled={saveWaypoints.isPending}
+                >
                   {t("waypoints.cancel")}
                 </Button>
-                <Button onClick={() => save(langs)} loading={saveWaypoints.isPending}>
+                <Button
+                  onClick={() => save(langs)}
+                  loading={saveWaypoints.isPending}
+                >
                   {t("waypoints.save")}
                 </Button>
               </div>

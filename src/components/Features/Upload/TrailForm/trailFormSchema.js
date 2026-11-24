@@ -21,6 +21,7 @@ export function createInitialValues({ lang, routeType, municipalities }) {
     features: [],
     access: "",
     overnight: [],
+    aiLangs: [], // რომელი ენა შეივსო AI თარგმანით (ბილიკის გვერდზე ნიშანი)
   };
   for (const code of LANG_CODES) {
     values[`title_${code}`] = "";
@@ -87,5 +88,6 @@ export function toTrailInput(values) {
     features: values.features,
     access: values.access || null,
     overnight: values.overnight,
+    aiLangs: values.aiLangs.filter((lang) => langs.includes(lang)),
   };
 }

@@ -295,6 +295,9 @@
   },
   "languages": { "ka": "ქართული", "en": "English" },
   "trailForm": {
+    "aiTranslate": "AI translate",
+    "aiTranslateHint": "The title and description are translated from the other language",
+    "aiTranslatedNote": "Translated by AI — review it and fix anything if needed.",
     "slowSubmit": "Submitting is taking longer than usual. Check your internet connection. A browser ad blocker (e.g. Brave Shields) may be blocking the connection.",
     "viewTrail": "View trail",
     "municipalitiesAutoHint": "Detected from the track. Check it and change it if needed",
@@ -337,6 +340,8 @@
     }
   },
   "trailPage": {
+    "aiTranslated": "AI translation",
+    "aiTranslatedHint": "The text was translated automatically",
     "downloadNotPublished": "Download will be available once the trail is approved",
     "shareNotPublished": "Sharing will be available once the trail is approved",
     "by": "By {{name}}",
@@ -364,6 +369,8 @@
     }
   },
   "waypoints": {
+    "translateNames": "Translate names",
+    "translateNamesHint": "Missing names are translated by AI",
     "title": "Waypoints",
     "add": "Add waypoint",
     "cancelAdd": "Cancel",
@@ -397,7 +404,10 @@
     "saveError": "Couldn't save the waypoints. Check your connection and try again.",
     "emptyOwner": "No waypoints yet. Tap “Edit” to add a spring, camp or another spot.",
     "nameAllLangs": "Fill in the name in every language or leave it empty",
-"missingLangs": "Name missing: {{langs}}",
-"incomplete": "Some waypoints don't have a name in every language. Fill it in or clear the name."
+    "missingLangs": "Name missing: {{langs}}",
+    "incomplete": "Some waypoints don't have a name in every language. Fill it in or clear the name."
+  },
+  "translate": {
+    "error": "Translation failed. Try again or fill it in manually."
   }
 }

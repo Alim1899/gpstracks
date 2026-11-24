@@ -57,6 +57,15 @@ export function TrailHeader({ trail, onDownload, downloadDisabled }) {
         <h1 className={styles.title} lang={title.lang ?? undefined}>
           {title.text}
         </h1>
+        {/* ამ ენაზე ტექსტი AI-მ თარგმნა (ავტორმა შეიძლება შეასწორა) */}
+        {trail.aiLangs?.includes(title.lang) && (
+          <span
+            className={styles.langBadge}
+            title={t("trailPage.aiTranslatedHint")}
+          >
+            {t("trailPage.aiTranslated")}
+          </span>
+        )}
         {title.lang && title.lang !== lang && (
           <span className={styles.langBadge}>
             {t("trailPage.onlyIn", {
