@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
+import { useIsAdmin } from "@/hooks/useAdmin";
+import { ModerationPanel } from "../../Admin/ModerationPanel/ModerationPanel";
 import {
   buildProfile,
   slopeSegments,
@@ -46,6 +48,8 @@ export function TrailPage() {
   const { id } = useParams();
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
+  const { isAdmin } = useIsAdmin();
+  const navigate = useNavigate();
   const trailQuery = useTrail(id);
   const trackQuery = useTrailTrack(id);
   const coords = trackQuery.data?.coords;
@@ -180,6 +184,14 @@ export function TrailPage() {
             />
           )}
           <TrackStats stats={stats} />
+          {isAdmin && (
+            <ModerationPanel
+              trail={trail}
+              onDeleted={() =>
+                navigate("/admin?status=rejected", { replace: true })
+              }
+            />
+          )}
           <TrailWarnings trail={trail} isOwner={isOwner} />
           <TrailDetails trail={trail} />
 

@@ -3,7 +3,13 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import Layout from "@/components/Layout/Layout";
 import { ProtectedRoute } from "@/components/Features/Auth/ProtectedRoute/ProtectedRoute";
 import { Loader } from "./components/UI/Index";
+import { AdminRoute } from "./components/Features/Auth/ProtectedRoute/AdminRoute";
 // გვერდები ცალკე ფაილებად; named export-ს lazy-სთვის default-ად ვაქცევთ
+const AdminPage = lazy(() =>
+  import("@/components/Features/Admin/Pages/AdminPage").then((m) => ({
+    default: m.AdminPage,
+  })),
+);
 const HomePage = lazy(() =>
   import("@/components/Features/Trails/Pages/HomePage").then((m) => ({
     default: m.HomePage,
@@ -20,7 +26,9 @@ const RegisterPage = lazy(() =>
   })),
 );
 const TrailPage = lazy(() =>
-  import("@/components/Features/Trails/Pages/TrailPage").then((m) => ({ default: m.TrailPage }))
+  import("@/components/Features/Trails/Pages/TrailPage").then((m) => ({
+    default: m.TrailPage,
+  })),
 );
 const UploadPage = lazy(() =>
   import("@/components/Features/Upload/Pages/UploadPage").then((m) => ({
@@ -28,7 +36,9 @@ const UploadPage = lazy(() =>
   })),
 );
 const NotFoundPage = lazy(() =>
-  import("@/components/Features/Common/Pages/NotFoundPage").then((m) => ({ default: m.NotFoundPage }))
+  import("@/components/Features/Common/Pages/NotFoundPage").then((m) => ({
+    default: m.NotFoundPage,
+  })),
 );
 function App() {
   return (
@@ -42,7 +52,9 @@ function App() {
             <Route path="trails/:id" element={<TrailPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="upload" element={<UploadPage />} />
-              
+            </Route>
+            <Route element={<AdminRoute />}>
+              <Route path="admin" element={<AdminPage />} />
             </Route>
             <Route path="*" element={<NotFoundPage />} />
           </Route>

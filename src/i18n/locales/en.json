@@ -1,5 +1,6 @@
 {
   "nav": {
+    "admin":"Moderation",
     "home": "Home",
     "upload": "Upload",
     "login": "Log in",
@@ -377,6 +378,7 @@
     "loadError": "Couldn't load the trail. Please try again",
     "trackError": "Couldn't load the track",
     "warnings": {
+      "rejected": "This trail was rejected and isn't visible to others.\nReason: {{reason}}",
       "pending": "This trail is awaiting review. For now, only you can see it.",
       "occupied": "This trail passes through occupied territory. Access is restricted and may be dangerous.",
       "mountaineering": "This is a mountaineering route: experience and proper equipment are required."
@@ -425,5 +427,29 @@
   },
   "translate": {
     "error": "Translation failed. Try again or fill it in manually."
-  }
+  },
+  "admin": {
+  "title": "Moderation",
+  "moderation": "Moderation",
+  "tabs": { "pending": "Pending", "published": "Published", "rejected": "Rejected" },
+  "status": { "pending": "Pending", "published": "Published", "rejected": "Rejected" },
+  "empty": {
+    "pending": "No trails waiting for review",
+    "published": "No published trails",
+    "rejected": "No rejected trails"
+  },
+  "loadError": "Couldn't load the list. Please try again",
+  "approve": "Approve",
+  "reject": "Reject",
+  "unpublish": "Unpublish",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "rejectReason": "Reason",
+  "rejectReasonHint": "The author will see this on the trail page",
+  "rejectReasonRequired": "Enter a reason",
+  "reason": "Reason: {{reason}}",
+  "confirmDelete": "The trail, its track and the original file will be deleted permanently.",
+  "confirmDeleteButton": "Delete permanently",
+  "actionError": "The action failed. Please try again"
+}
 }

@@ -1,0 +1,42 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1.5px dashed var(--color-primary);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+/* სიაში: ჩარჩოს გარეშე, მხოლოდ ღილაკები */
+.compact { padding: 0; border: 0; background: none; }
+
+.head { margin: 0; font-weight: 600; }
+
+.status {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.status[data-status="pending"]   { background: var(--color-info-soft); }
+.status[data-status="published"] { background: var(--color-success-soft); color: var(--color-success); }
+.status[data-status="rejected"]  { background: var(--color-error-soft); color: var(--color-error); }
+
+.reason {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: 8px;
+  background: var(--color-error-soft);
+  color: var(--color-error);
+  font-size: 14px;
+  white-space: pre-line;
+}
+
+.form { display: flex; flex-direction: column; gap: var(--space-3); }
+.confirm { margin: 0; font-size: 14px; }
+
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.actions > * { display: inline-flex; align-items: center; gap: 6px; }
+
+.danger, .danger:hover:not(:disabled) { background: var(--color-error); border-color: var(--color-error); }
+.dangerOutline { color: var(--color-error); }
