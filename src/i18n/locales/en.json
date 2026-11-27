@@ -1,10 +1,15 @@
 {
   "nav": {
-    "admin":"Moderation",
+    "admin": "Moderation",
     "home": "Home",
     "upload": "Upload",
     "login": "Log in",
-    "logout": "Log out"
+    "logout": "Log out",
+    "searchPlaceholder": "Search: title, author, municipality",
+    "clearSearch": "Clear search",
+    "noResults": "No trails match this search",
+    "showOnMap": "On map",
+    "openTrail": "Full page"
   },
   "common": {
     "or": "or",
@@ -70,26 +75,36 @@
     "weakPassword": "Password is too weak",
     "unknown": "Something went wrong. Please try again"
   },
- "home": {
-  "filters": "Filters",
-  "list": "Trail list",
-  "map": "Map",
-  "allActivities": "All",
-  "showMap": "Show map",
-  "showList": "Show list",
-  "results_one": "{{count}} trail",
-  "results_other": "{{count}} trails",
-  "sortLabel": "Sort",
-  "sort": { "newest": "Newest", "shortest": "Shortest", "longest": "Longest", "easiest": "Easiest" },
-  "distance": { "short": "Under 5 km", "medium": "5–10 km", "long": "10–20 km", "veryLong": "Over 20 km" },
-  "chooseActivity": "Choose a category above to filter by difficulty",
-  "inSeason": "Good right now ({{month}})",
-  "reset": "Clear",
-  "empty": "No published trails yet.",
-  "noResults": "No trails match these filters.",
-  "loadError": "Couldn't load trails. Try refreshing the page.",
-  "viewTrail": "View trail"
-},
+  "home": {
+    "filters": "Filters",
+    "list": "Trail list",
+    "map": "Map",
+    "allActivities": "All",
+    "showMap": "Show map",
+    "showList": "Show list",
+    "results_one": "{{count}} trail",
+    "results_other": "{{count}} trails",
+    "sortLabel": "Sort",
+    "sort": {
+      "newest": "Newest",
+      "shortest": "Shortest",
+      "longest": "Longest",
+      "easiest": "Easiest"
+    },
+    "distance": {
+      "short": "Under 5 km",
+      "medium": "5–10 km",
+      "long": "10–20 km",
+      "veryLong": "Over 20 km"
+    },
+    "chooseActivity": "Choose a category above to filter by difficulty",
+    "inSeason": "Good right now ({{month}})",
+    "reset": "Clear",
+    "empty": "No published trails yet.",
+    "noResults": "No trails match these filters.",
+    "loadError": "Couldn't load trails. Try refreshing the page.",
+    "viewTrail": "View trail"
+  },
   "upload": {
     "title": "Upload a track",
     "drop": "Drop a GPX or KML file",
@@ -386,7 +401,7 @@
   },
   "waypoints": {
     "translateName": "Translate",
-"translating": "Translating...",
+    "translating": "Translating...",
     "translateNames": "Translate names",
     "translateNamesHint": "Missing names are translated by AI",
     "title": "Waypoints",
@@ -429,27 +444,40 @@
     "error": "Translation failed. Try again or fill it in manually."
   },
   "admin": {
-  "title": "Moderation",
-  "moderation": "Moderation",
-  "tabs": { "pending": "Pending", "published": "Published", "rejected": "Rejected" },
-  "status": { "pending": "Pending", "published": "Published", "rejected": "Rejected" },
-  "empty": {
-    "pending": "No trails waiting for review",
-    "published": "No published trails",
-    "rejected": "No rejected trails"
-  },
-  "loadError": "Couldn't load the list. Please try again",
-  "approve": "Approve",
-  "reject": "Reject",
-  "unpublish": "Unpublish",
-  "delete": "Delete",
-  "cancel": "Cancel",
-  "rejectReason": "Reason",
-  "rejectReasonHint": "The author will see this on the trail page",
-  "rejectReasonRequired": "Enter a reason",
-  "reason": "Reason: {{reason}}",
-  "confirmDelete": "The trail, its track and the original file will be deleted permanently.",
-  "confirmDeleteButton": "Delete permanently",
-  "actionError": "The action failed. Please try again"
-}
+    "title": "Moderation",
+    "moderation": "Moderation",
+          "searchPlaceholder": "Search: title, author, municipality",
+      "clearSearch": "Clear search",
+      "noResults": "No trails match this search",
+      "showOnMap": "On map",
+      "openTrail": "Full page",
+    "tabs": {
+      "pending": "Pending",
+      "published": "Published",
+      "rejected": "Rejected"
+    },
+    "status": {
+      "pending": "Pending",
+      "published": "Published",
+      "rejected": "Rejected"
+    },
+    "empty": {
+      "pending": "No trails waiting for review",
+      "published": "No published trails",
+      "rejected": "No rejected trails"
+    },
+    "loadError": "Couldn't load the list. Please try again",
+    "approve": "Approve",
+    "reject": "Reject",
+    "unpublish": "Unpublish",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "rejectReason": "Reason",
+    "rejectReasonHint": "The author will see this on the trail page",
+    "rejectReasonRequired": "Enter a reason",
+    "reason": "Reason: {{reason}}",
+    "confirmDelete": "The trail, its track and the original file will be deleted permanently.",
+    "confirmDeleteButton": "Delete permanently",
+    "actionError": "The action failed. Please try again"
+  }
 }

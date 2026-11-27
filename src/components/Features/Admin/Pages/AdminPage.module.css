@@ -1,5 +1,5 @@
 .page {
-  max-width: 960px;
+  max-width: 1500px;
   margin: 0 auto;
   padding: var(--space-6) var(--space-4) var(--space-8);
 }
@@ -42,23 +42,126 @@
   text-align: center;
 }
 
+/* ძებნა */
+.search {
+  position: relative;
+  max-width: 480px;
+  margin-bottom: var(--space-4);
+}
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-muted);
+  pointer-events: none;
+}
+.searchInput {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 40px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  font: inherit;
+}
+.searchInput:focus { outline: 3px solid var(--color-focus); border-color: var(--color-primary); }
+.searchInput::-webkit-search-cancel-button { display: none; } /* საკუთარი X ღილაკი გვაქვს */
+.clear {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+.clear:hover { background: var(--color-bg); color: var(--color-text); }
+
+/* სია მარცხნივ, რუკა მარჯვნივ (სქროლისას რუკა ადგილზე რჩება) */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
 .list { display: flex; flex-direction: column; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
 
 .row {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-4);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   background: var(--color-surface);
 }
+.activeRow { border-color: var(--color-primary); box-shadow: 0 0 0 1px var(--color-primary); }
 
-.info { min-width: 0; flex: 1 1 320px; display: flex; flex-direction: column; gap: 2px; }
+.info { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .trailTitle { font-weight: 700; font-size: 17px; color: var(--color-text); text-decoration: none; }
 .trailTitle:hover { color: var(--color-primary); text-decoration: underline; }
 .meta { margin: 0; color: var(--color-muted); font-size: 14px; }
 
+.rowActions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-2); }
+
+.mapButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.mapButton:hover { border-color: var(--color-primary); }
+.mapButton[aria-pressed="true"] { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-success-soft); }
+
+.preview {
+  position: sticky;
+  top: calc(var(--header-height) + var(--space-4));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.previewHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.openLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+.previewMap {
+  --map-height: calc(100dvh - var(--header-height) - 100px);
+  min-height: 320px;
+}
+
 .empty { color: var(--color-muted); margin: var(--space-6) 0; }
+
+/* ვიწრო ეკრანზე: რუკა სიის თავზე */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .preview { position: static; order: -1; }
+  .previewMap { --map-height: 320px; }
+}
