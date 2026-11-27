@@ -1,10 +1,11 @@
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
-import { Activity, Car, Footprints, MapPin, Mountain } from "lucide-react";
+import { Activity, Car, Footprints, MapPin, Mountain,User  } from "lucide-react";
 import { localized } from "@/components/Utils/localized";
 import { formatDuration } from "@/components/Utils/trackParser";
 import { difficultyTone } from "@/components/Utils/trailFilters";
 import styles from "./TrailCard.module.css";
+import { authorLabel } from "@/components/Utils/author";
 
 const ACTIVITY_ICONS = {
   hiking: Footprints,
@@ -22,6 +23,7 @@ export function TrailCard({ trail, active, onHover }) {
   const title = localized(trail.title, i18n.resolvedLanguage);
   const Icon = ACTIVITY_ICONS[trail.activity];
   const [firstPlace, ...otherPlaces] = trail.municipalities ?? [];
+  const author = authorLabel(trail, t);
 
   return (
     <Link
@@ -53,7 +55,12 @@ export function TrailCard({ trail, active, onHover }) {
           {otherPlaces.length > 0 && ` +${otherPlaces.length}`}
         </p>
       )}
-
+{author && (
+  <p className={`${styles.author} ${trail.authorDeleted ? styles.authorDeleted : ""}`}>
+    <User size={14} />
+    {author}
+  </p>
+)}
       <dl className={styles.stats}>
         <div>
           <dt>{t("stats.distance")}</dt>

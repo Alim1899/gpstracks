@@ -1,29 +1,38 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "@/components/UI/Modal/Modal";
-import { deleteAccount } from "@/components/Services/userService";
+import { PasswordInput } from "@/components/UI/Index";
+import { useAuth } from "@/Context/useAuth";
+import { deleteAccount, needsPassword } from "@/components/Services/userService";
 import styles from "./UserMenu.module.css";
 
 const ERROR_KEYS = {
   "auth/popup-closed-by-user": "deleteAccount.errors.cancelled",
   "auth/cancelled-popup-request": "deleteAccount.errors.cancelled",
   "auth/user-mismatch": "deleteAccount.errors.userMismatch",
+  "auth/wrong-password": "deleteAccount.errors.wrongPassword",
+  "auth/invalid-credential": "deleteAccount.errors.wrongPassword",
 };
 
 export default function DeleteAccountModal({ onClose, onDeleted }) {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const withPassword = needsPassword(user);
+
   const [choice, setChoice] = useState(null); // "delete" | "keep"
   const [confirmed, setConfirmed] = useState(false);
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const canDelete = choice && confirmed && (!withPassword || password) && !loading;
   const safeClose = () => !loading && onClose();
 
   async function handleDelete() {
     setLoading(true);
     setError("");
     try {
-      await deleteAccount({ keepTrails: choice === "keep" });
+      await deleteAccount({ keepTrails: choice === "keep", password });
       onClose();
       onDeleted();
     } catch (e) {
@@ -42,11 +51,7 @@ export default function DeleteAccountModal({ onClose, onDeleted }) {
           <button className={styles.btnSecondary} onClick={safeClose} disabled={loading}>
             {t("common.cancel")}
           </button>
-          <button
-            className={styles.btnDanger}
-            onClick={handleDelete}
-            disabled={!choice || !confirmed || loading}
-          >
+          <button className={styles.btnDanger} onClick={handleDelete} disabled={!canDelete}>
             {loading ? t("deleteAccount.deleting") : t("deleteAccount.delete")}
           </button>
         </>
@@ -67,6 +72,15 @@ export default function DeleteAccountModal({ onClose, onDeleted }) {
       </label>
 
       <p className={styles.hint}>{t("deleteAccount.pendingNote")}</p>
+
+      {withPassword && (
+        <PasswordInput
+          label={t("deleteAccount.password")}
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      )}
 
       <label className={styles.checkbox}>
         <input type="checkbox" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} />

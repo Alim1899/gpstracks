@@ -64,3 +64,13 @@
 }
 .stats dt { color: var(--color-muted); font-size: 12px; }
 .stats dd { margin: 0; font-size: 14px; font-weight: 600; }
+.author {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.authorDeleted { font-style: italic; }

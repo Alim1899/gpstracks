@@ -22,7 +22,6 @@ const { t } = useTranslation();
           type="button"
           className={styles.toggle}
           onClick={() => setVisible((v) => !v)}
-        hint={capsOn ? t("auth.capsLock") : props.hint}
 aria-label={visible ? t("auth.hidePassword") : t("auth.showPassword")}
         >
           {visible ? <EyeOff size={20} /> : <Eye size={20} />}

@@ -10,6 +10,7 @@ import { useTrailTrack } from "@/hooks/useTrails";
 import { TrackMap } from "@/components/Features/Trails/TrackMap/TrackMap";
 import { ModerationPanel } from "../ModerationPanel/ModerationPanel";
 import styles from "./AdminPage.module.css";
+import { authorLabel } from "@/components/Utils/author";
 
 // ძებნა: სათაური (ყველა ენაზე), ავტორი, მუნიციპალიტეტები (ნათარგმნი სახელით) და ID
 function matches(trail, q, t) {
@@ -143,7 +144,7 @@ export function AdminPage() {
                       {trail.municipalities?.map((m) => t(`municipalities.${m}`)).join(", ")}
                     </p>
                     <p className={styles.meta}>
-                      {t("trailPage.by", { name: trail.authorName || "—" })}
+                      {t("trailPage.by", { name: authorLabel(trail, t) || "—" })}
                       {trail.createdAt && ` · ${dateFormat.format(trail.createdAt.toDate())}`}
                     </p>
                   </div>

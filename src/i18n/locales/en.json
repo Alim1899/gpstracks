@@ -41,6 +41,7 @@
     }
   },
   "deleteAccount": {
+    "password": "Password to confirm",
     "title": "Delete profile",
     "irreversible": "This action cannot be undone.",
     "trailsQuestion": "What should happen to your trails?",
@@ -51,6 +52,7 @@
     "delete": "Delete",
     "deleting": "Deleting...",
     "errors": {
+      "wrongPassword": "Incorrect password",
       "cancelled": "Confirmation was cancelled",
       "userMismatch": "Choose the same Google account you are signed in with",
       "failed": "Could not delete the account. Please try again."

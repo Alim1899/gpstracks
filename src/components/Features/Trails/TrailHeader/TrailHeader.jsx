@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/UI/Index";
 import { localized } from "@/components/Utils/localized";
 import styles from "./TrailHeader.module.css";
+import { authorLabel } from "@/components/Utils/author";
 
 const ACTIVITY_ICONS = {
   hiking: Footprints,
@@ -50,7 +51,7 @@ export function TrailHeader({ trail, onDownload, downloadDisabled }) {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
-
+  const author = authorLabel(trail, t);
   return (
     <header className={styles.header}>
       <div className={styles.titleRow}>
@@ -93,8 +94,8 @@ export function TrailHeader({ trail, onDownload, downloadDisabled }) {
 
       <div className={styles.bottomRow}>
         <p className={styles.meta}>
-          {trail.authorName && t("trailPage.by", { name: trail.authorName })}
-          {trail.authorName && created && " · "}
+          {author && t("trailPage.by", { name: author })}
+          {author && created && " · "}
           {created && formatDate(created, t)}
         </p>
 
