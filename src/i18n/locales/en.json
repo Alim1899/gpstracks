@@ -1,4 +1,62 @@
 {
+  "modal": { "close": "Close" },
+  "author": { "deletedProfile": "Deleted profile" },
+  "userMenu": {
+    "myTrails": "My trails",
+    "notifications": "Notifications",
+    "interface": "Interface",
+    "myTraces": "My Traces",
+    "pro": "Pro version",
+    "soon": "Soon",
+    "editProfile": "Edit profile",
+    "moreOptions": "More options",
+    "logout": "Log out",
+    "settings": {
+      "units": "Units",
+      "metric": "km / m",
+      "imperial": "mi / ft",
+      "basemap": "Basemap",
+      "topo": "Topo",
+      "satellite": "Satellite",
+      "osm": "Standard",
+      "theme": "Theme",
+      "light": "Light",
+      "dark": "Dark"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "You have no new notifications"
+  },
+  "editProfile": {
+    "title": "Edit profile",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "save": "Save",
+    "saving": "Saving...",
+    "errors": {
+      "firstNameRequired": "First name is required",
+      "maxLength": "Maximum {{max}} characters",
+      "saveFailed": "Could not save changes"
+    }
+  },
+  "deleteAccount": {
+    "title": "Delete profile",
+    "irreversible": "This action cannot be undone.",
+    "trailsQuestion": "What should happen to your trails?",
+    "deleteAll": "Delete all trails",
+    "keepPublished": "Keep published trails (author: \"Deleted profile\")",
+    "pendingNote": "Pending and rejected trails are deleted in both cases.",
+    "confirm": "I understand my account cannot be recovered",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "errors": {
+      "cancelled": "Confirmation was cancelled",
+      "userMismatch": "Choose the same Google account you are signed in with",
+      "failed": "Could not delete the account. Please try again."
+    }
+  },
+
   "nav": {
     "admin": "Moderation",
     "home": "Home",
@@ -12,6 +70,7 @@
     "openTrail": "Full page"
   },
   "common": {
+    "cancel": "Cancel",
     "or": "or",
     "change": "Change",
     "loading": "Loading..."
@@ -446,11 +505,11 @@
   "admin": {
     "title": "Moderation",
     "moderation": "Moderation",
-          "searchPlaceholder": "Search: title, author, municipality",
-      "clearSearch": "Clear search",
-      "noResults": "No trails match this search",
-      "showOnMap": "On map",
-      "openTrail": "Full page",
+    "searchPlaceholder": "Search: title, author, municipality",
+    "clearSearch": "Clear search",
+    "noResults": "No trails match this search",
+    "showOnMap": "On map",
+    "openTrail": "Full page",
     "tabs": {
       "pending": "Pending",
       "published": "Published",
